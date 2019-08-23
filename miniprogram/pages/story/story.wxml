@@ -1,6 +1,9 @@
-<van-tabbar v-model="active">
-  <van-tabbar-item icon="home-o">标签</van-tabbar-item>
-  <van-tabbar-item icon="search">标签</van-tabbar-item>
-  <van-tabbar-item icon="friends-o">标签</van-tabbar-item>
-  <van-tabbar-item icon="setting-o">标签</van-tabbar-item>
-</van-tabbar>
+<swiper indicator-dots="{{indicatorDots}} style='height:1000rpx;'
+  autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}
+  previous-margin = "80rpx" next-margin = "80rpx">
+  <block wx:for="{{imgUrls}}">
+    <swiper-item>
+      <image src="{{item}}" class="slide-image" width="355" height="150"/>
+    </swiper-item>
+  </block>
+</swiper>

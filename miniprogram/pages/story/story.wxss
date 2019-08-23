@@ -1,0 +1,6 @@
+.slide-image{
+  margin: 0 40rpx;
+}
+swiper {
+  height: 1000rpx;
+}
