@@ -1,0 +1,121 @@
+/* pages/home/home.wxss */
+swiper{
+  width: 100%;
+  height: 360rpx;
+}
+swiper-item{
+  width: 100%;
+  height: 100%;
+}
+swiper-item image{
+  width: 100%;
+  height: 100%;
+}
+.danghao{
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10rpx 30rpx;
+  position: relative;
+}
+
+.danghao::after{
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 98%;
+  transform: translate(-50%,0);
+  height: 10rpx;
+  border-bottom: 1px solid rgba(207,207,207,1);
+}
+
+.daohang_items{
+  width: 100%;
+  height: 120rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(207,207,207,1);
+  border-radius: 8rpx;
+}
+.danghang_item{
+  display: inline-block;
+  text-align: center;
+  height: 120rpx;
+  line-height: 120rpx;
+  color: rgba(116,116,116,1);
+  font-size: 46rpx;
+}
+.danghang_item.on{
+  background: rgba(116,116,116,1);
+  color: #fff;
+}
+.hot_comments{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.hot_comment{
+  margin: 20rpx 14rpx;
+  box-sizing: border-box;
+  padding: 20rpx;
+  box-shadow: 0 4rpx 10rpx rgba(0,0,0,.5);
+  border-radius: 12rpx;
+  line-height: 60rpx;
+  min-height: 120rpx;
+  font-size: 36rpx;
+  text-indent: 72rpx;
+}
+.storys{
+  width: 100%;
+}
+
+.storys_item{
+  margin: 10rpx 20rpx;
+  box-sizing: border-box;
+  padding: 20rpx 40rpx;
+  overflow: hidden;
+  position: relative;
+  min-height: 160rpx;
+}
+
+.header{
+  width: 100%;
+  height: 100rpx;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 10rpx;
+  display: flex;
+}
+
+.header_img{
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 20rpx;
+}
+.header_thumb{
+  width: 100%;
+  height: 100%;
+}
+.header_text{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.header_name{
+  font-size: 28rpx;
+  overflow: hidden;
+}
+.header_time{
+  font-size: 20rpx;
+  color: #cccccc;
+}
+.content{
+  box-sizing: border-box;
+  padding: 16rpx;
+  font-size: 34rpx;
+  line-height: 50rpx;
+}

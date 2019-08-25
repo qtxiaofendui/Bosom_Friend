@@ -1,7 +1,7 @@
 //app.js
 App({
-  onLaunch: function () {
-    
+  onLaunch: function() {
+
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
@@ -14,7 +14,29 @@ App({
         traceUser: true,
       })
     }
+    this.globalData = {
+      wyy_root : 'http://neteasecloudmusicapi.zhaoboy.com'
+    }
+  },
 
-    this.globalData = {}
+  getWYYData(params) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: this.globalData.wyy_root + params,
+        success: data =>resolve(data),
+        fail: err =>reject(err)
+      })
+    })
+  },
+  getRequestData(url){
+    return new Promise((resolve, reject) =>{
+      wx.request({
+        url: url,
+        success: data => resolve(data),
+        fail: err => reject(err)
+      })
+    })
+    
   }
+  
 })
