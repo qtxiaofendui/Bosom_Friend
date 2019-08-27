@@ -16,8 +16,8 @@ Page({
     interval: 2000,
     duration: 500,
     danghangs:['评论','故事'],
-    currentIndex : 0,
-    showComments : true
+    currentIndex : 1,
+    showComments : false
   },
   watchtab(e){
     let _this = this
@@ -26,6 +26,28 @@ Page({
     this.setData({
       currentIndex : e.currentTarget.dataset.index,
       showComments : !_this.data.showComments
+    })
+  },
+  addCount(e){
+    let index = e.currentTarget.dataset.index,
+        story_count = `storys[${index}].count`,
+        story_zanimg = `storys[${index}].zanimg`,
+        story_hasActive = `storys[${index}].hasActive`,
+        count = this.data.storys[index].count,
+        hasActive = this.data.storys[index].hasActive,
+        imgUrl = '/images/zan/zan_fullred.png';
+    if(hasActive){
+      count--;
+      imgUrl = '/images/zan/zan_dark.png';
+    }else{
+      count++;
+      imgUrl = '/images/zan/zan_fullred.png'
+    }
+    
+    this.setData({
+      [story_count] : count,
+      [story_zanimg]: imgUrl,
+      [story_hasActive] : !hasActive
     })
   },
 
@@ -41,11 +63,15 @@ Page({
       let storys = []
       hotComs.forEach(v=>{
         let story = {}
+        story.id = v.commentId
         story.name = v.user.nickname;
         story.img = v.user.avatarUrl;
         story.content = v.content;
         let ti = new Date(v.time)
         story.time = ti.toLocaleString();
+        story.zanimg = '/images/zan/zan_dark.png'
+        story.count = parseInt(Math.random()*1000)
+        story.hasActive = false
         storys.push(story)
       })
       this.setData({
