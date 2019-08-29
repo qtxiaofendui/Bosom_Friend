@@ -37,6 +37,25 @@ App({
       })
     })
     
+  },
+  requestData(url,data,header,method,dataType,responseType){
+    return new Promise((resolve,reject)=>{
+      wx.request({
+        url: url,
+        data: data,
+        header: header,
+        method: method,
+        dataType: dataType,
+        responseType: responseType,
+        success: (result)=>{
+          return resolve(result)
+        },
+        fail: ()=>{
+          return reject('err')
+        },
+        complete: ()=>{}
+      });
+    })
   }
   
 })

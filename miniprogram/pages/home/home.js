@@ -18,7 +18,8 @@ Page({
     danghangs:['评论','故事'],
     currentIndex : 1,
     currentSongId : 0,
-    showComments : false
+    showComments : false,
+    hasMore : true
   },
   watchtab(e){
     let _this = this
@@ -57,7 +58,14 @@ Page({
    */
   onLoad: function (options) {
     this.initData()
+    this.loginWYY()
     
+  },
+  loginWYY(){
+    app.getWYYData(`/login/cellphone?phone=18379376564&password=cys091113.`)
+    .then(res=>{
+      console.log(res);
+    })
     
   },
 
@@ -170,15 +178,23 @@ Page({
    */
   onReachBottom: function () {
     console.log('到底了');
+    this.showMoreData()
+  },
+  showMoreData(){
+    let currentSongId = ++this.data.currentSongId
+    if(currentSongId >= this.data.songIdArr.length){
+      this.setData({
+        hasMore : false
+      })
+    }
+    let songId = this.data.songIdArr[currentSongId].id
     wx.showLoading({
       title: '正在获取更多数据',
       mask: true,
     });
-    let currentSongId = ++this.data.currentSongId
     this.setData({
       currentSongId : currentSongId
     })
-    let songId = this.data.songIdArr[currentSongId].id
     app.getWYYData(`/comment/hot?id=${songId}&type=0`)
     .then(res=>{
       let hotComs = res.data.hotComments

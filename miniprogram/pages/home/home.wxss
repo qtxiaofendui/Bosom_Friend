@@ -142,3 +142,14 @@ swiper-item image{
   font-size: 34rpx;
   line-height: 50rpx;
 }
+.storys_bottom{
+  width: 100%;
+  text-align: center;
+  height: 60rpx;
+}
+.bottom_text{
+  font-size: 26rpx;
+  color: #cccccc;
+  display: line-block;
+  line-height: 60rpx;
+}

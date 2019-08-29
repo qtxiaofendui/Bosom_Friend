@@ -37,5 +37,8 @@
         <text class="content_text">{{item.content}}</text>
       </view>
     </view>
+    <view wx:if="{{!hasMore}}"  class="storys_bottom">
+      <text class="bottom_text">没有更多了</text>
+    </view>
   </view>
 </view>
