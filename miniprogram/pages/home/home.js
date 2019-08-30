@@ -57,21 +57,42 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.initData()
-    this.loginWYY()
+    this.loginWYY().then(res=>{
+      console.log(res);
+      
+      if(res == 1){
+        this.initData()
+      }
+    })
     
   },
   loginWYY(){
-    app.getWYYData(`/login/cellphone?phone=18379376564&password=cys091113.`)
+    return app.getWYYData({url:`/login/cellphone?phone=18379376564&password=cys091113.`})
     .then(res=>{
-      console.log(res);
+      let key = 'Cookie',
+          value = res.cookies.reduce((p,v)=>{
+            p.push(v.split(';')[0])
+            return p
+          },[])
+      this.setStorage(key,value)
+      return 1
     })
-    
+  },
+
+  setStorage(key,value){
+    wx.setStorage({
+      key: key,
+      data: value,
+      success: (result)=>{
+      },
+      fail: ()=>{},
+      complete: ()=>{}
+    });
   },
 
   getSongArr(){
     return new Promise((resolve,reject)=>{
-      app.getWYYData(`/personalized/newsong`)
+      app.getWYYData({url:`/recommend/songs`})
       .then(res=>{
         console.log(res);
         return resolve(res)
@@ -81,17 +102,17 @@ Page({
   initData(){
     this.getSongArr().then(res=>[
       this.setData({
-        songIdArr:res.data.result
+        songIdArr:res.data.recommend
       })
     ]).then(()=>{
       let currentSongId = this.data.currentSongId
       let songId = this.data.songIdArr[currentSongId].id
-      return app.getWYYData(`/comment/hot?id=${songId}&type=0`)
+      return app.getWYYData({url:`/comment/hot?id=${songId}&type=0`})
     })
     .then(res=>{
+      console.log(res);
       let currentSongId = this.data.currentSongId
       let songId = this.data.songIdArr[currentSongId].id
-      console.log(res);
       let hotComs = res.data.hotComments
       let storys = []
       this.getStorys(hotComs,storys)
@@ -103,6 +124,9 @@ Page({
     })
     .catch(console.log)
 
+    this.getItems()
+  },
+  getItems(){
     let item_len = this.data.danghangs.length;
     let item_p = parseInt(100 / item_len)
     this.setData({
@@ -119,8 +143,8 @@ Page({
       let ti = new Date(v.time)
       story.time = ti.toLocaleString();
       story.zanimg = '/images/zan/zan_dark.png'
-      story.count = parseInt(Math.random()*1000)
-      story.hasActive = false
+      story.count = v.likedCount
+      story.hasActive = v.liked
       storys.push(story)
     })
   },
@@ -150,7 +174,7 @@ Page({
     let songId = this.data.songId
     this.data.storys.forEach(v=>{
       if(v.hasActive){
-        app.getWYYData(`/comment/like?id=${songId}&cid=${v.commentId}&t=1&type=0`)
+        app.getWYYData({url:`/comment/like?id=${songId}&cid=${v.commentId}&t=1&type=0`})
         .then(res=>{
           console.log(res);
           
@@ -195,7 +219,7 @@ Page({
     this.setData({
       currentSongId : currentSongId
     })
-    app.getWYYData(`/comment/hot?id=${songId}&type=0`)
+    app.getWYYData({url:`/comment/hot?id=${songId}&type=0`})
     .then(res=>{
       let hotComs = res.data.hotComments
       let newHotStorys = []
