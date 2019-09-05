@@ -47,13 +47,29 @@ Page({
   },
 
   setStorage(key, value) {
-    wx.setStorage({
-      key: key,
-      data: value,
-      success: (result) => {},
-      fail: () => {},
-      complete: () => {}
-    });
+    return new Promise((resolve,reject)=>{
+      wx.setStorage({
+        key: key,
+        data: value,
+        success: result => resolve(result),
+        fail: err => reject(err),
+        complete: () => {}
+      });
+    })
+  },
+
+  getUserWyyData(id){
+    app.getWYYData({url:`/user/detail?uid=${id}`}).then(res=>{
+      console.log(res);
+      this.setGlobalUserData(res.data.profile)
+    })
+  },
+  setGlobalUserData(data){
+    let userInfo = {}
+    userInfo.name = data.nickname
+    userInfo.img = data.avatarUrl
+    userInfo.bgcImg = data.backgroundUrl
+    this.setStorage('user',userInfo)
   },
 
   loginWYY(phone, psw) {
@@ -61,11 +77,14 @@ Page({
         url: `/login/cellphone?phone=${phone}&password=${psw}`
       })
       .then(res => {
+        console.log(res)
         let title,icon;
         if (res.data.code === 200) {
           title = '绑定成功'
           icon = 'success'
-          this.setCookie(res.cookies)
+          this.setCookie(res.cookies).then(()=>{
+            this.getUserWyyData(res.data.account.id)
+          })
         } else {
           title = '手机或密码错误'
           icon = 'none'
@@ -101,7 +120,7 @@ Page({
         p.push(v.split(';')[0])
         return p
       }, [])
-    this.setStorage(key, value)
+    return this.setStorage(key, value)
   },
   /**
    * 生命周期函数--监听页面加载

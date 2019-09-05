@@ -17,25 +17,30 @@ Page({
     })
   },
   sendComment(e){
-    let newComment = this.getNewComment()
-    this.setData({
-      newComment : ''
-    })
-    let detailComs = this.data.detailComs
-    detailComs.push(newComment)
-    this.setData({
-      detailComs:detailComs
+    this.getNewComment().then(res=>{
+      let newComment = res
+      this.setData({
+        newComment : ''
+      })
+      let detailComs = this.data.detailComs
+      detailComs.push(newComment)
+      this.setData({
+        detailComs:detailComs
+      })
     })
   },
   getNewComment(){
-    let newComment = {}
-    newComment.content = this.data.newComment
-    newComment.time = new Date().toLocaleString()
-    newComment.zanimg = '/images/zan/zan_fullred.png'
-    newComment.name = '才有所改观'
-    newComment.count = 0
-    newComment.img = 'https://p3.music.126.net/B1KyQ4omJf6bqU0LXlMySQ==/6668538022921486.jpg'
-    return newComment
+    return this.getStorage('user').then(res=>{
+      console.log(res);
+      let newComment = {}
+      newComment.content = this.data.newComment
+      newComment.time = new Date().toLocaleString()
+      newComment.zanimg = '/images/zan/zan_fullred.png'
+      newComment.name = res.data.name
+      newComment.count = 0
+      newComment.img = res.data.img
+      return newComment
+    })
   },
 
   /**

@@ -34,9 +34,13 @@ App({
       obj.header = {
         'Cookie': res.data.join(';')
       }
-      return this.requestData(obj)
+      return obj
+    }).catch(err =>{
+      obj.url = this.globalData.wyy_root + obj.url
+      return obj
+    }).then(res=>{
+      return this.requestData(res)
     })
-    
   },
   requestData(obj) {
     let {
