@@ -1,9 +1,8 @@
 {
   "pages": [
+    "pages/home/home",
     "pages/mine/mine",
     "pages/add/add",
-    "pages/home/home",
-    
     "pages/story/story",
     "pages/index/index",
     "pages/personalCenter/personalCenter",
