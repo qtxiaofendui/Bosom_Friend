@@ -26,10 +26,19 @@
           <view class="header_name">{{item.name}}</view>
           <view class="header_time">{{item.time}}</view>
         </view>
+        <view class="header_zan" data-index="{{index}}" bindtap="addCount">
+          <view class="header_zan_thumb">
+            <image class="header_zan_image" src="{{item.zanimg}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+          </view>
+          <view class="header_zan_count">{{item.count}}</view>
+        </view>
       </view>
       <view class="content">
         <text class="content_text">{{item.content}}</text>
       </view>
+    </view>
+    <view wx:if="{{!hasMore}}"  class="storys_bottom">
+      <text class="bottom_text">没有更多了</text>
     </view>
   </view>
 </view>

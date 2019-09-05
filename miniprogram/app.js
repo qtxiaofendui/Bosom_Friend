@@ -1,6 +1,6 @@
 //app.js
 App({
-  onLaunch: function() {
+  onLaunch: function () {
 
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
@@ -15,28 +15,55 @@ App({
       })
     }
     this.globalData = {
-      wyy_root : 'http://neteasecloudmusicapi.zhaoboy.com'
+      wyy_root: 'http://neteasecloudmusicapi.zhaoboy.com'
     }
   },
-
-  getWYYData(params) {
-    return new Promise((resolve, reject) => {
-      wx.request({
-        url: this.globalData.wyy_root + params,
-        success: data =>resolve(data),
-        fail: err =>reject(err)
-      })
+  getCookies(){
+    return new Promise((resolve,reject)=>{
+      wx.getStorage({
+        key: 'Cookie',
+        success: result=>resolve(result),
+        fail: ()=>reject('err')
+      });
     })
   },
-  getRequestData(url){
-    return new Promise((resolve, reject) =>{
-      wx.request({
-        url: url,
-        success: data => resolve(data),
-        fail: err => reject(err)
-      })
+
+  getWYYData(obj) {
+    return this.getCookies().then(res=>{
+      obj.url = this.globalData.wyy_root + obj.url
+      obj.header = {
+        'Cookie': res.data.join(';')
+      }
+      return this.requestData(obj)
     })
     
+  },
+  requestData(obj) {
+    let {
+      url,
+      data,
+      header,
+      method,
+      dataType,
+      responseType
+    } = obj
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: url,
+        data: data,
+        header: header,
+        method: method,
+        dataType: dataType,
+        responseType: responseType,
+        success: (result) => {
+          return resolve(result)
+        },
+        fail: () => {
+          return reject('err')
+        },
+        complete: () => {}
+      });
+    })
   }
-  
+
 })
