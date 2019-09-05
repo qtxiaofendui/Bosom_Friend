@@ -1,13 +1,14 @@
 {
   "pages": [
-    "pages/detail/detail",
     "pages/home/home",
+    "pages/detail/detail",
     "pages/bindWYY/index",
     "pages/mine/mine",
+    "pages/add/add",
+    
     "pages/story/story",
     "pages/index/index",
     "pages/personalCenter/personalCenter",
-    "pages/add/add",
     "pages/userConsole/userConsole",
     "pages/storageConsole/storageConsole",
     "pages/databaseGuide/databaseGuide",
@@ -21,7 +22,7 @@
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
-    "backgroundTextStyle": "light",
+    "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#F6F6F6",
     "navigationBarTitleText": "云开发 QuickStart",
     "navigationBarTextStyle": "black"
