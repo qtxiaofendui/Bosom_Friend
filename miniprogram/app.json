@@ -1,6 +1,8 @@
 {
   "pages": [
+    "pages/detail/detail",
     "pages/home/home",
+    "pages/bindWYY/index",
     "pages/mine/mine",
     "pages/story/story",
     "pages/index/index",
@@ -28,8 +30,8 @@
     "list": [
       {
         "pagePath": "pages/home/home",
-        "iconPath" : "images/tabber_icon/home.png",
-        "selectedIconPath":"images/tabber_icon_active/home.png"
+        "iconPath": "images/tabber_icon/home.png",
+        "selectedIconPath": "images/tabber_icon_active/home.png"
       },
       {
         "pagePath": "pages/add/add",

@@ -1,0 +1,55 @@
+<!-- miniprogram/pages/detail/detail.wxml -->
+<view class="main">
+    <view class="story_item">
+        <view class="header">
+            <view class="header_img">
+                <image class="header_thumb" src="{{detailInfo.img}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+            </view>
+            <view class="header_text">
+                <view class="header_name">{{detailInfo.name}}</view>
+                <view class="header_time">{{detailInfo.time}}</view>
+            </view>
+        </view>
+        <view class="content">
+            <text class="content_text">{{detailInfo.content}}</text>
+        </view>
+        <view class="songName">----  {{detailInfo.artistsName}}  《{{detailInfo.songName}}》</view>
+    </view>
+    <view class="detailComs">
+        <scroll-view class="comsScroll" scroll-y>
+            <view class="comsItem" wx:for="{{detailComs}}" wx:key="index" id="wx_{{item.id}}">
+                <view class="header">
+                    <view class="header_img">
+                        <image class="header_thumb" src="{{item.img}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+                    </view>
+                    <view class="header_text">
+                        <view class="header_name">{{item.name}}</view>
+                        <view class="header_time">{{item.time}}</view>
+                    </view>
+                    <view class="header_zan" bindtap="addCount">
+                        <view class="header_right">
+                            <view class="header_zan_thumb">
+                                <image class="header_zan_image" src="{{item.zanimg}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+                            </view>
+                            <view class="header_zan_count">{{item.count}}</view>
+                        </view>
+                    </view>
+                </view>
+                <view class="content">
+                    <text class="content_text">{{item.content}}</text>
+                </view>
+            </view>
+        </scroll-view>
+    </view>
+</view>
+<view class="tabber">
+    <view class="plArea">
+        <input type="text" value="{{newComment}}" bindinput="editComment" placeholder="写评论" placeholder-class="plPlace" class="plInp" />
+    </view>
+    <view class="pltext {{disAble ? 'light' : 'dark'}}" catchtap="sendComment">发布</view>
+    <view class="zanArea">
+        <view class="zanArea_thumb">
+            <image class="zanArea_image" src="{{detailInfo.zanimg}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+        </view>
+    </view>
+</view>
