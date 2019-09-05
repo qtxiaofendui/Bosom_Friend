@@ -1,1 +1,69 @@
-/* pages/add/add.wxss */
+swiper {
+  height: 95vh;
+}
+
+swiper-item {
+  padding: 0 30rpx;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.contain_bg {
+  width: 100%;
+  height: 100%;
+  background-size: 100% 100%;
+  border-radius: 20rpx;
+  background-color: red;
+  position: relative;
+}
+.contain {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(255,255,255,0.65)
+}
+
+.title {
+  position: absolute;
+  top: 80rpx;
+  left: 10rpx;
+  font-size: 20px;
+}
+
+.date {
+  position: absolute;
+  font-size: 11px;
+  top: 180rpx;
+  left: 10rpx;
+  font-style: oblique;
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 20rpx;
+  position: absolute;
+  box-sizing: border-box;
+  font-size: 13px;
+  top: 250rpx;
+  line-height: 50rpx;
+}
+
+.slide-image {
+  height: 100%;
+  margin: 0 auto;
+  opacity: 0.4;
+  position: absolute;
+  top: 0;
+}
+
+.submit {
+  position: absolute;
+  bottom: 0rpx;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: rgb(252, 248, 248);
+  z-index: 10;
+}

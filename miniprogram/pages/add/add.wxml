@@ -1,2 +1,14 @@
-<!--pages/add/add.wxml-->
-<text>pages/add/add.wxml</text>
+<swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" previous-margin="60rpx" next-margin="60rpx">
+  <block wx:for="{{imgUrls}}" wx:for-index="index">
+    <swiper-item>
+      <view class="contain_bg" style="background-image:url('{{item}}')">
+        <view class="contain">
+          <input class="title" placeholder="请输入你的标题" bindblur="input_title"></input>
+          <text class="date">{{time}}</text>
+          <textarea class="content" bindblur="input_content"></textarea>
+          <button class="submit" bindtap="submit">确认并发表</button>
+        </view>
+      </view>
+    </swiper-item>
+  </block>
+</swiper>

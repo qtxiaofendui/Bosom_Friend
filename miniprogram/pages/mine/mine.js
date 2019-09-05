@@ -5,7 +5,23 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    dynamic: [
+      {
+        title : 'Finish Home Screen',
+        date : '2019-09-08',
+        like_Account : '80'
+      },
+      {
+        title: '大大怪将军',
+        date: '2019-09-11',
+        like_Account: '1000'
+      },
+      {
+        title: '大大怪将军',
+        date: '2019-09-10',
+        like_Account: '910'
+      }
+    ],
   },
 
   /**
