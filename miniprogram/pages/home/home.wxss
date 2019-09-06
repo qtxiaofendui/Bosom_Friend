@@ -142,6 +142,11 @@ swiper-item image{
   font-size: 34rpx;
   line-height: 50rpx;
 }
+.songName{
+  font-size: 20rpx;
+  color: #cccccc;
+  text-align: right;
+}
 .storys_bottom{
   width: 100%;
   text-align: center;

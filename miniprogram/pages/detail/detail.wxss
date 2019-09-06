@@ -1,0 +1,183 @@
+/* miniprogram/pages/detail/detail.wxss */
+.main{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+}
+.story_item {
+    background-color: #fff;
+    margin: 10rpx 0;
+    box-sizing: border-box;
+    padding: 20rpx 40rpx;
+    overflow: hidden;
+    position: relative;
+    min-height: 160rpx;
+}
+
+.header {
+    width: 100%;
+    height: 100rpx;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 10rpx;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.header_img {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 20rpx;
+}
+
+.header_thumb {
+    width: 100%;
+    height: 100%;
+}
+
+.header_text {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.header_name {
+    font-size: 28rpx;
+    overflow: hidden;
+}
+
+.header_time {
+    font-size: 20rpx;
+    color: #cccccc;
+}
+
+.header_zan {
+    flex: 1;
+    height: 30rpx;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.header_right{
+    width: 120rpx;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.header_zan_thumb {
+    margin: 0 10rpx;
+    width: 30rpx;
+    height: 30rpx;
+}
+
+.header_zan_image {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.header_zan_count {
+    font-size: 20rpx;
+    color: #ccc;
+}
+
+.story_item .content {
+    box-sizing: border-box;
+    padding: 16rpx;
+    font-size: 34rpx;
+    line-height: 50rpx;
+}
+
+.songName {
+    font-size: 20rpx;
+    color: #cccccc;
+    text-align: right;
+}
+.detailComs{
+    width: 100%;
+    margin: 40rpx 0 80rpx 0;
+    box-sizing: border-box;
+    padding: 0 20rpx;
+    background-color:#fff;
+}
+.comsItem{
+    padding: 16rpx 0;
+    border-bottom: 1px solid #f4f4f4;
+    display: block;
+}
+.comsItem:last-child{
+    border-bottom: none;
+}
+.comsScroll{
+    width: 100%;
+}
+.comsItem .content {
+    box-sizing: border-box;
+    padding: 16rpx;
+    font-size: 30rpx;
+    line-height: 50rpx;
+}
+.tabber{
+    position: fixed;
+    bottom: 0;
+    height: 80rpx;
+    width: 100%;
+    background-color: #fcfcfc;
+    border-top: 1rpx solid #f3f3f3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20rpx;
+    box-sizing: border-box;
+}
+.plArea{
+    flex: 1;
+    height: 30rpx;
+    min-height: 1.4rem;
+    display: flex;
+    align-items: center;
+    background-color: #f3f3f3;
+    border-radius: 15rpx;
+}
+.plInp{
+    width: 100%;
+    height: 100%;
+    background-color: #f3f3f3;
+    font-size: 26rpx;
+    margin: 0 26rpx;
+}
+.plPlace{
+    font-size: 26rpx;
+}
+.pltext{
+    font-size: 24rpx;
+    padding: 20rpx;
+}
+.dark{
+    color: #cccccc;
+}
+.lighe{
+    color: #000;
+}
+.zanArea{
+    padding: 0 0 0 20rpx;
+    width: 30rpx;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+.zanArea_thumb{
+    width: 30rpx;
+    height: 30rpx;
+    overflow: hidden;
+}
+.zanArea_image{
+    width: 100%;
+    height: 100%;
+    display: block;
+}
