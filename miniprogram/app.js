@@ -35,10 +35,17 @@ App({
         'Cookie': res.data.join(';')
       }
       return obj
+<<<<<<< HEAD
     }).catch(err => {
       obj.url = this.globalData.wyy_root + obj.url
       return obj
     }).then(res => {
+=======
+    }).catch(err =>{
+      obj.url = this.globalData.wyy_root + obj.url
+      return obj
+    }).then(res=>{
+>>>>>>> f6966ef7ab26a69058602e23e4da78d0168b7cda
       return this.requestData(res)
     })
   },
