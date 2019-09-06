@@ -7,7 +7,7 @@
                     <input name="phone" bindinput="inputPhone" type="number" placeholder-class="phone-placeholder" placeholder="请输入手机号" />
                 </view>
                 <view class="section">
-                    <input name="password" bindinput="inputPassword" type="number" placeholder-class="psw-placeholder" placeholder="请输入密码" password="{{true}}" />
+                    <input name="password" bindinput="inputPassword" placeholder-class="psw-placeholder" placeholder="请输入密码" password="{{true}}" />
                 </view>
             </view>
             <view class="btn-area">

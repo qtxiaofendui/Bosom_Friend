@@ -21,11 +21,31 @@
   </view>
   <view class="footer">
     <block wx:for="{{dynamic}}" wx:for-index="index">
-      <view class="dynamic_item">
-        <text>{{item.title}}</text>
-        <text>{{item.date}}</text>
-        <text>{{item.like_Account}}</text>
-      </view>
+      <block wx:if="{{item.active}}">
+        <view class="dynamic_item active">
+          <!-- 实心原点，颜色变幻 -->
+          <view class="flag active"></view>
+          <text class="title">{{item.title}}</text>
+          <text class="date">{{item.date}}</text>
+          <text class="like_Account">{{item.like_Account}}</text>
+          <text class="unit">AM</text>
+          <view class="commentators">
+            <block wx:for="{{item.users}}" wx:for-item="user">
+              <view class="Portrait"><image src="{{user.thumbUrl}}"></image></view>
+            </block>
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="dynamic_item">
+          <!-- 实心原点，颜色变幻 -->
+          <view class="flag"></view>
+          <text class="title">{{item.title}}</text>
+          <text class="date">{{item.date}}</text>
+          <text class="like_Account">{{item.like_Account}}\n<span>AM</span></text>
+          <text class="unit">AM</text>
+        </view>
+      </block>
     </block>
   </view>
 </view>
