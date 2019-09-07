@@ -16,8 +16,8 @@
         <view class="songName">----  {{detailInfo.artistsName}}  《{{detailInfo.songName}}》</view>
     </view>
     <view class="detailComs">
-        <scroll-view class="comsScroll" scroll-y>
-            <view class="comsItem" wx:for="{{detailComs}}" wx:key="index" id="wx_{{item.id}}">
+        <scroll-view class="comsScroll" scroll-y scroll-into-view="{{goCommentId}}">
+            <view class="comsItem" wx:for="{{detailComs}}" wx:key="index" id="wx_{{item.commentId}}">
                 <view class="header">
                     <view class="header_img">
                         <image class="header_thumb" src="{{item.img}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>

@@ -6,7 +6,9 @@ Page({
    */
   data: {
     disAble : false,
-    newComment : ''
+    newComment : '',
+    detailComs : [],
+    goCommentId: ''
   },
   editComment(e){
     let commentValue = e.detail.value,
@@ -27,15 +29,23 @@ Page({
       this.setData({
         detailComs:detailComs
       })
+      return res.commentId-1
+    })
+    .then(res=>{
+      this.setData({
+        goCommentId : 'wx_' + res
+      })
     })
   },
   getNewComment(){
     return this.getStorage('user').then(res=>{
       console.log(res);
+      let lastId = this.data.detailComs.length
       let newComment = {}
+      newComment.commentId = ++lastId
       newComment.content = this.data.newComment
       newComment.time = new Date().toLocaleString()
-      newComment.zanimg = '/images/zan/zan_fullred.png'
+      newComment.zanimg = '/images/zan/zan_dark.png'
       newComment.name = res.data.name
       newComment.count = 0
       newComment.img = res.data.img
@@ -53,8 +63,7 @@ Page({
         return res.data
       })
       this.setData({
-        detailInfo : res.data,
-        detailComs : detailComs
+        detailInfo : res.data
       })
     })
   },
