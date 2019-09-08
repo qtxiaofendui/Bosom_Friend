@@ -238,6 +238,7 @@ Page({
     console.log(e);
     let index = e.currentTarget.dataset.index,
         dataInfo = this.data.storys[index];
+    dataInfo.parentIndex = index;
     console.log(dataInfo);
     this.setStorage('currentDetail',dataInfo)
     .then(()=>{

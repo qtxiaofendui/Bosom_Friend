@@ -69,6 +69,7 @@ Page({
     userInfo.name = data.nickname
     userInfo.img = data.avatarUrl
     userInfo.bgcImg = data.backgroundUrl
+    userInfo.id = data.userId
     this.setStorage('user',userInfo)
   },
 

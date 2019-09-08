@@ -1,53 +1,60 @@
 <!-- miniprogram/pages/detail/detail.wxml -->
 <view class="main">
-    <view class="story_item">
-        <view class="header">
-            <view class="header_img">
-                <image class="header_thumb" src="{{detailInfo.img}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+    <scroll-view class="comsScroll" bindscrolltolower="scrollToBottom" scroll-y scroll-into-view="{{goCommentId}}" scroll-with-animation="{{true}}" bo>
+        <view class="story_item">
+            <view class="header">
+                <view class="header_img">
+                    <image class="header_thumb" src="{{detailInfo.img}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+                </view>
+                <view class="header_text">
+                    <view class="header_name">{{detailInfo.name}}</view>
+                    <view class="header_time">{{detailInfo.time}}</view>
+                </view>
             </view>
-            <view class="header_text">
-                <view class="header_name">{{detailInfo.name}}</view>
-                <view class="header_time">{{detailInfo.time}}</view>
+            <view class="content">
+                <text class="content_text">{{detailInfo.content}}</text>
+            </view>
+            <view class="songName">
+                ----  {{detailInfo.artistsName}}  《{{detailInfo.songName}}》
             </view>
         </view>
-        <view class="content">
-            <text class="content_text">{{detailInfo.content}}</text>
-        </view>
-        <view class="songName">----  {{detailInfo.artistsName}}  《{{detailInfo.songName}}》</view>
-    </view>
-    <view class="detailComs">
-        <scroll-view class="comsScroll" scroll-y>
-            <view class="comsItem" wx:for="{{detailComs}}" wx:key="index" id="wx_{{item.id}}">
-                <view class="header">
-                    <view class="header_img">
-                        <image class="header_thumb" src="{{item.img}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
-                    </view>
-                    <view class="header_text">
-                        <view class="header_name">{{item.name}}</view>
-                        <view class="header_time">{{item.time}}</view>
-                    </view>
-                    <view class="header_zan" bindtap="addCount">
-                        <view class="header_right">
-                            <view class="header_zan_thumb">
-                                <image class="header_zan_image" src="{{item.zanimg}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+        <view class="detailComs">
+            <block wx:for="{{detailComs}}" wx:key="{{index}}">
+                <view class="comsItem" id="wx_{{item.commentId}}">
+                    <view class="header">
+                        <view class="header_img">
+                            <image class="header_thumb" src="{{item.img}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+                        </view>
+                        <view class="header_text">
+                            <view class="header_name">{{item.name}}</view>
+                            <view class="header_time">{{item.time}}</view>
+                        </view>
+                        <view class="header_zan" data-index="{{index}}" bindtap="likeDetailChange">
+                            <view class="header_right">
+                                <view class="header_zan_thumb">
+                                    <image class="header_zan_image" src="{{item.zanimg}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
+                                </view>
+                                <view class="header_zan_count">{{item.count}}</view>
                             </view>
-                            <view class="header_zan_count">{{item.count}}</view>
                         </view>
                     </view>
+                    <view class="content">
+                        <text class="content_text">{{item.content}}</text>
+                    </view>
                 </view>
-                <view class="content">
-                    <text class="content_text">{{item.content}}</text>
-                </view>
+            </block>
+            <view wx:if="{{!hasMoreDetail}}"  class="detailComs_bottom">
+                <text class="bottom_text">没有更多了</text>
             </view>
-        </scroll-view>
-    </view>
+        </view>
+    </scroll-view>
 </view>
 <view class="tabber">
     <view class="plArea">
-        <input type="text" value="{{newComment}}" bindinput="editComment" placeholder="写评论" placeholder-class="plPlace" class="plInp" />
+        <input type="text" value="{{resetContent}}" bindinput="editComment" placeholder="写评论" placeholder-class="plPlace" class="plInp" />
     </view>
     <view class="pltext {{disAble ? 'light' : 'dark'}}" catchtap="sendComment">发布</view>
-    <view class="zanArea">
+    <view class="zanArea" catchtap="changeParentLiked">
         <view class="zanArea_thumb">
             <image class="zanArea_image" src="{{detailInfo.zanimg}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
         </view>
