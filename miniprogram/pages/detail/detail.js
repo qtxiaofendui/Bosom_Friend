@@ -84,6 +84,7 @@ Page({
       newComment.content = this.data.EditContent
       newComment.time = new Date().toLocaleString()
       newComment.zanimg = '/images/zan/zan_dark.png'
+      newComment.hasActive = false
       newComment.name = res.data.name
       newComment.count = 0
       newComment.img = res.data.img
@@ -92,9 +93,9 @@ Page({
   },
   changeParentLiked() {
     let dataInfo = this.data.detailInfo,
-        count = dataInfo.count,
-        hasActive = dataInfo.hasActive,
-        imgUrl = '';
+      count = dataInfo.count,
+      hasActive = dataInfo.hasActive,
+      imgUrl = '';
     if (hasActive) {
       count--;
       imgUrl = '/images/zan/zan_dark.png';
@@ -102,14 +103,14 @@ Page({
       count++;
       imgUrl = '/images/zan/zan_fullred.png'
     }
-    this.setCurrPageData(count, imgUrl, !hasActive)
+    this.setCurrPageData('detailInfo', count, imgUrl, !hasActive)
     this.setHomePageData(count, imgUrl, !hasActive)
-    this.debounce(this.likeChanged,500)(dataInfo)
+    this.debounce(this.likeChanged, 500)(dataInfo)
   },
-  setCurrPageData(count, imgUrl, hasActive) {
-    let detailInfo_count = `detailInfo.count`,
-      detailInfo_zanimg = `detailInfo.zanimg`,
-      detailInfo_hasActive = `detailInfo.hasActive`;
+  setCurrPageData(item, count, imgUrl, hasActive) {
+    let detailInfo_count = `${item}.count`,
+      detailInfo_zanimg = `${item}.zanimg`,
+      detailInfo_hasActive = `${item}.hasActive`;
     this.setData({
       [detailInfo_count]: count,
       [detailInfo_zanimg]: imgUrl,
@@ -132,7 +133,7 @@ Page({
   likeChanged(item) { //获取喜欢的评论
     // console.log(item);
     console.log(1);
-    
+
     let t = 1
     if (!item.hasActive) {
       t = 0
@@ -147,13 +148,33 @@ Page({
 
       })
   },
-  debounce(fn,delay){
-    return function(...args){
+  likeDetailChange(e) {
+    let detailComs = this.data.detailComs,
+        index = e.currentTarget.dataset.index,
+        dataInfo = detailComs[index],
+        count = dataInfo.count,
+        hasActive = !dataInfo.hasActive,
+        imgUrl = '';
+    if (hasActive) {
+      count++;
+      imgUrl = '/images/zan/zan_fullred.png'
+    } else {
+      count--;
+      imgUrl = '/images/zan/zan_dark.png';
+    }
+    this.setCurrPageData(`detailComs[${index}]`, count, imgUrl, hasActive)
+    this.debounce(this.updataDetailCom, 500)(dataInfo._id,{count,zanimg:imgUrl,hasActive})
+  },
+  updataDetailCom(id,data){
+    app.updataItemFromDb('comments',id,{data})
+  },
+  debounce(fn, delay) {
+    return function (...args) {
       let timer = this.data.timer
       clearTimeout(timer)
-      timer = setTimeout(()=>{
-        fn.apply(this,args)
-      },delay)
+      timer = setTimeout(() => {
+        fn.apply(this, args)
+      }, delay)
       this.setData({
         timer: timer
       })

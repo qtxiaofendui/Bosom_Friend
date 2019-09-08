@@ -29,7 +29,7 @@
                             <view class="header_name">{{item.name}}</view>
                             <view class="header_time">{{item.time}}</view>
                         </view>
-                        <view class="header_zan" bindtap="addCount">
+                        <view class="header_zan" data-index="{{index}}" bindtap="likeDetailChange">
                             <view class="header_right">
                                 <view class="header_zan_thumb">
                                     <image class="header_zan_image" src="{{item.zanimg}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>

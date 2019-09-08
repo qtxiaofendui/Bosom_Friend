@@ -89,5 +89,10 @@ App({
   getLastItemFromDb(collection,tagName,order,limit){
     const db = wx.cloud.database()
     return db.collection(collection).orderBy(tagName, order).limit(limit).get()
+  },
+  updataItemFromDb(collection,id,data){
+    const db = wx.cloud.database()
+    console.log(id,data);
+    return db.collection(collection).doc(id).update(data)
   }
 })
