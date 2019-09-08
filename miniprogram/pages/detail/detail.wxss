@@ -1,10 +1,11 @@
 /* miniprogram/pages/detail/detail.wxss */
-.main{
+.main {
     position: absolute;
     width: 100%;
     height: 100%;
     background-color: #f4f4f4;
 }
+
 .story_item {
     background-color: #fff;
     margin: 10rpx 0;
@@ -62,7 +63,8 @@
     justify-content: flex-end;
     align-items: center;
 }
-.header_right{
+
+.header_right {
     width: 120rpx;
     height: 100%;
     display: flex;
@@ -98,31 +100,53 @@
     color: #cccccc;
     text-align: right;
 }
-.detailComs{
+
+.detailComs {
     width: 100%;
     margin: 40rpx 0 80rpx 0;
     box-sizing: border-box;
     padding: 0 20rpx;
-    background-color:#fff;
+    background-color: #fff;
+    overflow: hidden;
 }
-.comsItem{
+
+.comsItem {
     padding: 16rpx 0;
     border-bottom: 1px solid #f4f4f4;
     display: block;
 }
-.comsItem:last-child{
+
+.comsItem:last-child {
     border-bottom: none;
 }
-.comsScroll{
+
+.comsScroll {
     width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
+
 .comsItem .content {
     box-sizing: border-box;
     padding: 16rpx;
     font-size: 30rpx;
     line-height: 50rpx;
 }
-.tabber{
+
+.detailComs_bottom {
+    width: 100%;
+    text-align: center;
+    height: 80rpx;
+}
+
+.bottom_text {
+    font-size: 26rpx;
+    color: #cccccc;
+    display: line-block;
+    line-height: 80rpx;
+}
+
+.tabber {
     position: fixed;
     bottom: 0;
     height: 80rpx;
@@ -135,7 +159,8 @@
     padding: 0 20rpx;
     box-sizing: border-box;
 }
-.plArea{
+
+.plArea {
     flex: 1;
     height: 30rpx;
     min-height: 1.4rem;
@@ -144,39 +169,47 @@
     background-color: #f3f3f3;
     border-radius: 15rpx;
 }
-.plInp{
+
+.plInp {
     width: 100%;
     height: 100%;
     background-color: #f3f3f3;
     font-size: 26rpx;
     margin: 0 26rpx;
 }
-.plPlace{
+
+.plPlace {
     font-size: 26rpx;
 }
-.pltext{
+
+.pltext {
     font-size: 24rpx;
     padding: 20rpx;
 }
-.dark{
+
+.dark {
     color: #cccccc;
 }
-.lighe{
+
+.lighe {
     color: #000;
 }
-.zanArea{
+
+.zanArea {
     padding: 0 0 0 20rpx;
     width: 30rpx;
     height: 100%;
     display: flex;
     align-items: center;
 }
-.zanArea_thumb{
+
+.zanArea_thumb {
     width: 30rpx;
     height: 30rpx;
     overflow: hidden;
 }
-.zanArea_image{
+
+.zanArea_image {
     width: 100%;
     height: 100%;
     display: block;

@@ -1,7 +1,6 @@
 //app.js
 App({
   onLaunch: function () {
-
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
@@ -15,7 +14,7 @@ App({
       })
     }
     this.globalData = {
-      wyy_root: 'http://neteasecloudmusicapi.zhaoboy.com'
+      wyy_root: 'http://musicapi.leanapp.cn/'
     }
   },
   getCookies(){
@@ -42,7 +41,6 @@ App({
       return this.requestData(res)
     })
   },
-
   requestData(obj) {
     let {
       url,
@@ -69,6 +67,26 @@ App({
         complete: () => {}
       });
     })
+  },
+  insetDataForDb(collection,data){
+    const db = wx.cloud.database()
+    const coll = db.collection(collection)
+    return coll.add(data)
+  },
+  getDataFromDb(collection,data,skipCount,limit){
+    console.log(skipCount,limit);
+    
+    const db = wx.cloud.database()
+    const coll = db.collection(collection)
+    
+    if(skipCount == 0){
+      return coll.where(data).limit(limit).get()
+    }else{
+      return coll.where(data).skip(skipCount).limit(limit).get()
+    }
+  },
+  getLastItemFromDb(collection,tagName,order,limit){
+    const db = wx.cloud.database()
+    return db.collection(collection).orderBy(tagName, order).limit(limit).get()
   }
-
 })

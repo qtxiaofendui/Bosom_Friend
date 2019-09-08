@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/home/home",
     "pages/bindWYY/index",
+    "pages/home/home",
     "pages/detail/detail",
     "pages/mine/mine",
     "pages/add/add",

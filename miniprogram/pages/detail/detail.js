@@ -1,4 +1,6 @@
 // miniprogram/pages/detail/detail.js
+const app = getApp();
+
 Page({
 
   /**
@@ -6,44 +8,74 @@ Page({
    */
   data: {
     disAble : false,
-    newComment : '',
+    EditContent : '',
+    resetContent : '',
     detailComs : [],
-    goCommentId: ''
+    goCommentId: '',
+    limitShowCommentsNum : 10,
+    showCommentsCount : 0,
+    hasMoreDetail: true,
+    lastCommentId : 0
+  },
+  InsetCommentsToCloud(data){
+    return app.insetDataForDb('comments',{data})
+  },
+  getCommentsFromCloud(showCommentsCount){
+    let limit = this.data.limitShowCommentsNum,
+        skipCount = parseInt(limit) * parseInt(showCommentsCount),
+        data = {parentCommentId : this.data.detailInfo.id}
+    return app.getDataFromDb('comments',data,skipCount,limit)
+  },
+  getLastCommentId(){
+    app.getLastItemFromDb('comments','commentId','desc',1)
+      .then(res => {
+        this.setData({
+          lastCommentId: res.data[0].commentId
+        })
+      })
   },
   editComment(e){
     let commentValue = e.detail.value,
         disAble = commentValue ? true : false;
     this.setData({
       disAble:disAble,
-      newComment : e.detail.value
+      EditContent : e.detail.value
     })
   },
   sendComment(e){
     this.getNewComment().then(res=>{
       let newComment = res
+      this.InsetCommentsToCloud(newComment)
       this.setData({
-        newComment : ''
+        resetContent : ''
       })
       let detailComs = this.data.detailComs
       detailComs.push(newComment)
       this.setData({
         detailComs:detailComs
       })
-      return res.commentId-1
+      return res.commentId
     })
     .then(res=>{
       this.setData({
         goCommentId : 'wx_' + res
       })
     })
+    .catch(err=>{
+      console.log(err)
+    })
   },
   getNewComment(){
     return this.getStorage('user').then(res=>{
       console.log(res);
-      let lastId = this.data.detailComs.length
+      let lastId = ++this.data.lastCommentId
+      this.setData({
+        lastCommentId: lastId
+      })
       let newComment = {}
-      newComment.commentId = ++lastId
-      newComment.content = this.data.newComment
+      newComment.parentCommentId = this.data.detailInfo.id
+      newComment.commentId = lastId
+      newComment.content = this.data.EditContent
       newComment.time = new Date().toLocaleString()
       newComment.zanimg = '/images/zan/zan_dark.png'
       newComment.name = res.data.name
@@ -52,18 +84,29 @@ Page({
       return newComment
     })
   },
+  changeParentLiked(){
+
+  },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
     this.getStorage('currentDetail').then(res=>{
-      console.log(res);
       let detailComs = Array.from({length:10},v=>{
         return res.data
       })
       this.setData({
         detailInfo : res.data
+      })
+    })
+    .then(() => {
+      this.getLastCommentId()
+      return this.getCommentsFromCloud(0)
+    })
+    .then(res =>{
+      this.setData({
+        detailComs: res.data
       })
     })
   },
@@ -122,13 +165,39 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-
+    
+  },
+  scrollToBottom(){
+    console.log('到底了');
+    wx.showLoading({
+      title: '正在加载数据'
+    });
+    let scc =  ++this.data.showCommentsCount
+    this.getCommentsFromCloud(scc)
+      .then(res => {
+        if(res.data.length){
+          let detailComs = this.data.detailComs
+          detailComs = detailComs.concat(res.data)
+          this.setData({
+            detailComs: detailComs,
+            hasMoreDetail: true,
+            showCommentsCount: scc
+          })
+        }else{
+          this.setData({
+            hasMoreDetail : false,
+            showCommentsCount : --scc
+          })
+        }
+      }).then(() => {
+        wx.hideLoading();
+      })
   },
 
   /**
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-
+    
   }
 })
