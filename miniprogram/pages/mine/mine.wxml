@@ -16,6 +16,7 @@
 </view> -->
 <view class="container">
   <view class="header" style="background-image:url('../../images/bg_img/bg_img(8).jpg')">
+    <image src="../../images/bg_img/bg_img(8).jpg"></image>
     <open-data type="userAvatarUrl" class="thumb"></open-data>
     <open-data type="userNickName" lang="zh_CN" class="nickname"></open-data>
   </view>
@@ -25,8 +26,8 @@
         <view class="dynamic_item active">
           <!-- 实心原点，颜色变幻 -->
           <view class="flag active"></view>
-          <text class="title">{{item.title}}</text>
-          <text class="date">{{item.date}}</text>
+          <text class="title">{{item.story_Title}}</text>
+          <text class="date">{{item.story_Date}}</text>
           <text class="like_Account">{{item.like_Account}}</text>
           <text class="unit">AM</text>
           <view class="commentators">
@@ -40,8 +41,8 @@
         <view class="dynamic_item">
           <!-- 实心原点，颜色变幻 -->
           <view class="flag"></view>
-          <text class="title">{{item.title}}</text>
-          <text class="date">{{item.date}}</text>
+          <text class="title">{{item.story_Title}}</text>
+          <text class="date">{{item.story_Date}}</text>
           <text class="like_Account">{{item.like_Account}}\n<span>AM</span></text>
           <text class="unit">AM</text>
         </view>

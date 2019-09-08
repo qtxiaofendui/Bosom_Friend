@@ -26,10 +26,17 @@
   height: 600rpx;
   display: flex;
   box-sizing: border-box;
-  background-color: red;
   background-size: cover;
+  position: relative;
 }
-
+.header image{
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  z-index: -1;
+}
 .thumb {
   height: 140rpx;
   width: 140rpx;
@@ -99,11 +106,15 @@
   flex-direction:row; 
 }
 .Portrait{
-  width: 50rpx;
-  height: 50rpx;
+  width: 60rpx;
+  height: 60rpx;
   overflow: hidden;
   border-radius: 50%;
   margin-right: 20rpx;
+}
+.Portrait image{
+  width: 100%;
+  height: 100%;
 }
 .unit{
   top: 130rpx;
