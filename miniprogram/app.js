@@ -14,7 +14,8 @@ App({
       })
     }
     this.globalData = {
-      wyy_root: 'http://musicapi.leanapp.cn/'
+      // wyy_root: 'http://neteasecloudmusicapi.zhaoboy.com'
+      wyy_root: 'http://127.0.0.1:3000'
     }
   },
   getCookies(){
