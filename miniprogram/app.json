@@ -1,11 +1,11 @@
 {
   "pages": [
+    "pages/mine/mine",
+    "pages/bindWYY/index",
+    "pages/add/add",
     "pages/home/home",
     "pages/bindWYY/index",
     "pages/detail/detail",
-    "pages/mine/mine",
-    "pages/add/add",
-    
     "pages/story/story",
     "pages/index/index",
     "pages/personalCenter/personalCenter",
@@ -18,7 +18,8 @@
     "pages/openapi/openapi",
     "pages/openapi/serverapi/serverapi",
     "pages/openapi/callback/callback",
-    "pages/openapi/cloudid/cloudid"
+    "pages/openapi/cloudid/cloudid",
+    "pages/Test/test"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
