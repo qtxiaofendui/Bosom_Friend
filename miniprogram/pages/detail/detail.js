@@ -24,13 +24,37 @@ Page({
       data
     })
   },
-  getCommentsFromCloud(showCommentsCount) {
+  getCommentsFromCloud(showCommentsCount,obj = {}) {
     let limit = this.data.limitShowCommentsNum,
       skipCount = parseInt(limit) * parseInt(showCommentsCount),
       data = {
         parentCommentId: this.data.detailInfo.id
       }
+      return this.operComsData(data, skipCount, limit)
+  },
+  operComsData(data, skipCount, limit){
     return app.getDataFromDb('comments', data, skipCount, limit)
+    .then(res => {
+      let len = res.data.length,
+          limitLen = this.data.limitShowCommentsNum,
+          hasMoreDetail = false,
+          scc = ++this.data.showCommentsCount,
+          detailComs = this.data.detailComs;
+        if (len == limitLen) {
+          detailComs = detailComs.concat(res.data)
+          hasMoreDetail = true
+        } else if (len && len < limitLen) {
+          detailComs = detailComs.concat(res.data)
+        } else {
+          --scc
+        }
+        this.setData({
+          detailComs: detailComs,
+          hasMoreDetail: hasMoreDetail,
+          showCommentsCount: scc
+        })
+      return res
+    })
   },
   getLastCommentId() {
     app.getLastItemFromDb('comments', 'commentId', 'desc', 1)
@@ -105,7 +129,7 @@ Page({
     }
     this.setCurrPageData('detailInfo', count, imgUrl, !hasActive)
     this.setHomePageData(count, imgUrl, !hasActive)
-    this.debounce(this.likeChanged, 500)(dataInfo)
+    this.likeChanged(dataInfo)
   },
   setCurrPageData(item, count, imgUrl, hasActive) {
     let detailInfo_count = `${item}.count`,
@@ -150,11 +174,11 @@ Page({
   },
   likeDetailChange(e) {
     let detailComs = this.data.detailComs,
-        index = e.currentTarget.dataset.index,
-        dataInfo = detailComs[index],
-        count = dataInfo.count,
-        hasActive = !dataInfo.hasActive,
-        imgUrl = '';
+      index = e.currentTarget.dataset.index,
+      dataInfo = detailComs[index],
+      count = dataInfo.count,
+      hasActive = !dataInfo.hasActive,
+      imgUrl = '';
     if (hasActive) {
       count++;
       imgUrl = '/images/zan/zan_fullred.png'
@@ -163,10 +187,16 @@ Page({
       imgUrl = '/images/zan/zan_dark.png';
     }
     this.setCurrPageData(`detailComs[${index}]`, count, imgUrl, hasActive)
-    this.debounce(this.updataDetailCom, 500)(dataInfo._id,{count,zanimg:imgUrl,hasActive})
+    this.updataDetailCom(dataInfo._id, {
+      count,
+      zanimg: imgUrl,
+      hasActive
+    })
   },
-  updataDetailCom(id,data){
-    app.updataItemFromDb('comments',id,{data})
+  updataDetailCom(id, data) {
+    app.updataItemFromDb('comments', id, {
+      data
+    })
   },
   debounce(fn, delay) {
     return function (...args) {
@@ -184,27 +214,29 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    let hop = options.hasOwnProperty('goCommentId')
+    console.log(options.goCommentId);
     this.getStorage('currentDetail').then(res => {
-        let detailComs = Array.from({
-          length: 10
-        }, v => {
-          return res.data
-        })
         this.setData({
           detailInfo: res.data
         })
       })
       .then(() => {
+        if(hop){
+          this.operComsData({
+            commentId:Number(options.goCommentId),
+            parentCommentId: this.data.detailInfo.id
+          }, 0, 1)
+        }
         this.getLastCommentId()
         return this.getCommentsFromCloud(0)
       })
       .then(res => {
         this.setData({
-          detailComs: res.data
+          goCommentId: hop ? 'wx_' + options.goCommentId : ''
         })
       })
   },
-
   getStorage(item) {
     return new Promise((resolve, reject) => {
       wx.getStorage({
@@ -266,24 +298,9 @@ Page({
     wx.showLoading({
       title: '正在加载数据'
     });
-    let scc = ++this.data.showCommentsCount
-    this.getCommentsFromCloud(scc)
+    
+    this.getCommentsFromCloud(++this.data.showCommentsCount)
       .then(res => {
-        if (res.data.length) {
-          let detailComs = this.data.detailComs
-          detailComs = detailComs.concat(res.data)
-          this.setData({
-            detailComs: detailComs,
-            hasMoreDetail: true,
-            showCommentsCount: scc
-          })
-        } else {
-          this.setData({
-            hasMoreDetail: false,
-            showCommentsCount: --scc
-          })
-        }
-      }).then(() => {
         wx.hideLoading();
       })
   },

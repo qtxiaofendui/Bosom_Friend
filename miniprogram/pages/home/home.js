@@ -243,7 +243,7 @@ Page({
     this.setStorage('currentDetail',dataInfo)
     .then(()=>{
       wx.navigateTo({
-        url: '/pages/detail/detail'
+        url: '/pages/detail/detail?goCommentId=29'
       });
     })
   },

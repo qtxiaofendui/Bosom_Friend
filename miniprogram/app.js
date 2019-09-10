@@ -75,7 +75,7 @@ App({
     return coll.add(data)
   },
   getDataFromDb(collection,data,skipCount,limit){
-    console.log(skipCount,limit);
+    console.log(data,skipCount,limit);
     
     const db = wx.cloud.database()
     const coll = db.collection(collection)
