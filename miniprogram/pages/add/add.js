@@ -50,6 +50,7 @@ Page({
     let user_Portrait = '';
     let like_Account = 0;
     let conmmeted_Account = 0;
+    let new_comments = {};
     //构造数据库字段
     
     //获取当前用户数据
@@ -67,7 +68,8 @@ Page({
       like_Account: like_Account,
       conmmeted_Account: conmmeted_Account,
       user_Name: user_Name,
-      user_Portrait: user_Portrait
+      user_Portrait: user_Portrait,
+      new_comments: new_comments
     }
       productsCollection.add({
         data: story
@@ -115,9 +117,9 @@ Page({
     })
   },
   onShow(){
-    console.log('开始编辑故事了');
+    //console.log('开始编辑故事了');
     var date = new Date().toUTCString()/*.substring(0, 16)*/;
-    console.log(date);
+    //console.log(date);
     this.setData({
       time:date
     })
