@@ -50,7 +50,6 @@ Page({
     let user_Portrait = '';
     let like_Account = 0;
     let conmmeted_Account = 0;
-    let new_comments = {};
     //构造数据库字段
     
     //获取当前用户数据

@@ -1,2 +1,9 @@
-<!--miniprogram/pages/Test/test.wxml-->
-<text>miniprogram/pages/Test/test.wxml</text>
+<!-- 自定义单选/多选/全选实现删除功能 -->
+<view class="item-box">
+    <view class="items">
+        <view wx:for="{{list}}" wx:key="{{index}}" class="item">
+            <view bindtouchstart="touchS" bindtouchmove="touchM" bindtouchend="touchE" data-index="{{index}}" style="{{item.txtStyle}}" class="inner txt">{{index+1}}.{{item.txt}}</view>
+            <view data-index="{{index}}" bindtap= "delItem" class="inner del">删除</view>
+        </view>
+    </view>
+</view>
