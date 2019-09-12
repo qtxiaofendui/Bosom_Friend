@@ -11,53 +11,6 @@ Page({
   data: {
     limit: 4,
     dynamic: [
-      // {
-      //   story_Title: 'Finish Home Screen',
-      //   date: '2019-09-08',
-      //   like_Account: '80',
-      //   active: false,
-      //   new_comments: []
-      // },
-      // {
-      //   story_Title: '大大怪将军',
-      //   date: 'June 17',
-      //   like_Account: '1000',
-      //   active: false,
-      //   new_comments: []
-      // },
-      // {
-      //   story_Title: '大大怪将军',
-      //   date: '2019-09-10',
-      //   like_Account: '910',
-      //   active: false,
-      //   new_comments: []
-      // },
-      // {
-      //   story_Title: '大大怪将军',
-      //   date: '2019-09-10',
-      //   like_Account: '910',
-      //   active: true,
-      //   new_comments: [{
-      //       img: 'http://p1.music.126.net/TuuwV-oVNsksERMb1aZtpA==/109951164315584682.jpg',
-      //       userName: 'Adam Lane'
-      //     },
-      //     {
-      //       img: 'http://p1.music.126.net/Iy9L9pDvSehZw2xIYxhkdw==/109951164314157448.jpg',
-      //       userName: 'Adam Lane'
-      //     },
-      //     {
-      //       img: 'http://p1.music.126.net/lx2H-24UBk1hI55bQIpFdA==/109951164315873437.jpg',
-      //       userName: 'Adam Lane'
-      //      }
-      //   ]
-      // },
-      // {
-      //   story_Title: '大大怪将军',
-      //   date: '2019-09-10',
-      //   like_Account: '910',
-      //   active: false,
-      //   new_comments: ''
-      // }
     ],
   },
 
@@ -86,7 +39,6 @@ Page({
   /**
    * 生命周期函数--监听页面显示
    */
-<<<<<<< HEAD
   onShow: function () {
     this.getDynamic(4, 0);
   },
@@ -103,18 +55,10 @@ Page({
     app.getDataFromDb('story', {}, skipCount, limit)
       .then(res => {
         dynamic = res.data;
-=======
-  onShow: function() {
-    let dynamic = this.data.dynamic;
-    story.get().then(res => {
-        // console.log(res.data);
-        //dynamic = res.data;
->>>>>>> a70672e37179bf4004f0cd0fdec0e681ec2faeb7
         this.setData({
           dynamic: this.data.dynamic.concat(res.data)
         })
       })
-<<<<<<< HEAD
       //故事与一级评论关联
       .then(() => {
         for (let i = skipCount; i < dynamic.length; i++) {
@@ -132,30 +76,6 @@ Page({
             });
         };
       })
-=======
-      //异步问题，先查询得到故事，查询与故事关联的comments
-      .then(
-        () => {
-          for (let i = 0; i < dynamic.length; i++) {
-            comments.where({
-                parentCommentId: dynamic[i]._id
-              }).get()
-              .then(res => {
-                //console.log(res.data,i);
-                dynamic[i]['not_read_comments'] = res.data;
-                dynamic[i]['active'] = true;
-                this.setDynamicItemData(i, dynamic[i])
-              });
-          };
-        }
-      )
-  },
-  setDynamicItemData(i,item){
-    let hasNotReadItem = `dynamic[${i}]`
-    this.setData({
-      [hasNotReadItem]: item
-    })
->>>>>>> a70672e37179bf4004f0cd0fdec0e681ec2faeb7
   },
   /**
    * 生命周期函数--监听页面隐藏
