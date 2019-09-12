@@ -64,21 +64,29 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function(options) {
+  onLoad: function (options) {
     //this.initEleWidth();
+    this.setData({
+      slideButtons: [
+        {
+          text: '删除',
+          extClass: 'test',
+          src: '../../images/mine_icon/shanchu.png ', // icon的路径
+        }],
+    });
   },
 
 
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function() {
+  onReady: function () {
 
   },
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function() {
+  onShow: function () {
     this.getDynamic(4, 0);
   },
   //更新数组数据
@@ -102,8 +110,8 @@ Page({
       .then(() => {
         for (let i = skipCount; i < dynamic.length; i++) {
           comments.where({
-              parentCommentId: dynamic[i]._id
-            }).limit(3).get()
+            parentCommentId: dynamic[i]._id
+          }).limit(3).get()
             .then(res => {
               dynamic[i]['not_read_comments'] = res.data;
               if (res.data.length !== 0) {
@@ -119,14 +127,14 @@ Page({
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function() {
+  onHide: function () {
 
   },
 
   /**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function() {
+  onUnload: function () {
 
   },
 
@@ -135,7 +143,7 @@ Page({
    */
 
   // 下拉刷新
-  onPullDownRefresh: function() {},
+  onPullDownRefresh: function () { },
   /**
    * 页面上拉触底事件的处理函数
    */
@@ -143,12 +151,12 @@ Page({
        * 页面上拉触底事件的处理函数
 
      */
-  onReachBottom: function() {
+  onReachBottom: function () {
     wx.showLoading({
       title: '玩命加载中',
     })
     console.log(this.data.limit);
-    this.getDynamic(3,this.data.limit);
+    this.getDynamic(3, this.data.limit);
     this.data.limit += 2;
     setTimeout(() => {
       this.setData({
@@ -160,7 +168,7 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function() {
+  onShareAppMessage: function () {
 
   },
   //获取元素自适应后的实际宽度
@@ -181,5 +189,46 @@ Page({
     this.setData({
       delBtnWidth: delBtnWidth
     });
+  },
+  slideButtonTap(e) {
+    // console.log('slide button tap', e.detail);
+    // console.log(e.target.dataset._id);
+    console.log(e);
+    var num = e.currentTarget.dataset.index;//获取data-index
+    this.data.dynamic.splice(num, 1);
+    this.setData({
+      dynamic: this.data.dynamic
+    });
+    story.where({
+      _id:this.data.dynamic[num]._id
+    }).remove();
+  },
+  toDetailPage(e) {
+    console.log(e);
+    let index = e.currentTarget.dataset.index,
+      dataInfo = this.data.dynamic[index];
+    dataInfo.parentIndex = index;
+    console.log(dataInfo);
+    this.setStorage('currentDetail', dataInfo)
+      .then(() => {
+        wx.navigateTo({
+          url: '/pages/detail/detail'
+        });
+      })
+  },
+  setStorage(key, value) {
+    return new Promise((resolve, reject) => {
+      wx.setStorage({
+        key: key,
+        data: value,
+        success: (result) => {
+          return resolve(result)
+        },
+        fail: (err) => {
+          return reject(err)
+        },
+        complete: () => { }
+      });
+    })
   }
 })

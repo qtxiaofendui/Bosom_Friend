@@ -5,32 +5,38 @@
     <open-data type="userNickName" lang="zh_CN" class="nickname"></open-data>
   </view>
   <view class="footer">
-     <block wx:for="{{dynamic}}" wx:for-index="index">
-      <block wx:if="{{item.active}}">
-        <view class="dynamic_item active">
-          <!-- 实心原点，颜色变幻 -->
-          <view class="flag active"></view>
-          <text class="title">{{item.story_Title}}</text>
-          <text class="date">{{item.story_Date}}</text>
-          <text class="like_Account">{{item.like_Account}}</text>
-          <text class="unit">AM</text>
-          <view class="commentators">
-            <block wx:for="{{item.not_read_comments}}" wx:for-item="new_comments">
-              <view class="Portrait"><image src="{{new_comments.img}}"></image></view>
-            </block>
-          </view>
-        </view>
-      </block>
-      <block wx:else>
-        <view class="dynamic_item">
-          <!-- 实心原点，颜色变幻 -->
-          <view class="flag"></view>
-          <text class="title">{{item.story_Title}}</text>
-          <text class="date">{{item.story_Date}}</text>
-          <text class="like_Account">{{item.like_Account}}\n<span>AM</span></text>
-          <text class="unit">AM</text>
-        </view>
-      </block>
+    <block wx:for="{{dynamic}}" wx:for-index="index" wx:key="index">
+      <mp-cells ext-class="my-cells" data-index="{{index}}" catchtap="toDetailPage">
+        <mp-slideview buttons="{{slideButtons}}" data-index = "{{index}}" bindbuttontap="slideButtonTap" icon="true" >
+          <block wx:if="{{item.active}}">
+            <view class="dynamic_item active">
+              <!-- 实心原点，颜色变幻 -->
+              <view class="flag active"></view>
+              <text class="title">{{item.story_Title}}</text>
+              <text class="date">{{item.story_Date}}</text>
+              <text class="like_Account">{{item.like_Account}}</text>
+              <text class="unit">AM</text>
+              <view class="commentators">
+                <block wx:for="{{item.not_read_comments}}" wx:for-item="new_comments" wx:key="index">
+                  <view class="Portrait">
+                    <image src="{{new_comments.img}}"></image>
+                  </view>
+                </block>
+              </view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class="dynamic_item">
+              <!-- 实心原点，颜色变幻 -->
+              <view class="flag"></view>
+              <text class="title">{{item.story_Title}}</text>
+              <text class="date">{{item.story_Date}}</text>
+              <text class="like_Account">{{item.like_Account}}\n<span>AM</span></text>
+              <text class="unit">AM</text>
+            </view>
+          </block>
+        </mp-slideview>
+      </mp-cells>
     </block>
   </view>
 </view>
