@@ -31,10 +31,10 @@ Page({
   },
   addCount(e) {
     let index = e.currentTarget.dataset.index,
-      item = this.data.storys[index],
-      story_count = `storys[${index}].count`,
-      story_zanimg = `storys[${index}].zanimg`,
-      story_hasActive = `storys[${index}].hasActive`,
+      item = this.data.hotComms[index],
+      hotCom_count = `hotComms[${index}].count`,
+      hotCom_zanimg = `hotComms[${index}].zanimg`,
+      hotCom_hasActive = `hotComms[${index}].hasActive`,
       count = item.count,
       hasActive = item.hasActive,
       imgUrl = '/images/zan/zan_fullred.png';
@@ -46,9 +46,9 @@ Page({
       imgUrl = '/images/zan/zan_fullred.png'
     }
     this.setData({
-      [story_count]: count,
-      [story_zanimg]: imgUrl,
-      [story_hasActive]: !hasActive,
+      [hotCom_count]: count,
+      [hotCom_zanimg]: imgUrl,
+      [hotCom_hasActive]: !hasActive,
     })
     item.hasActive = !hasActive
     this.likeChanged(item)
@@ -93,11 +93,10 @@ Page({
         let currentSongId = this.data.currentSongId,
             songinfo = this.data.songIdArr[currentSongId],
             hotComs = res.data.hotComments,
-            storys = []
-        this.getStorys(songinfo, hotComs, storys)
+            hotComms = []
+        this.gethotComms(songinfo, hotComs, hotComms)
         this.setData({
-          hotComments: hotComs,
-          storys: storys
+          hotComms: hotComms
         })
         wx.hideLoading();
       })
@@ -112,25 +111,25 @@ Page({
       item_p: item_p
     })
   },
-  getStorys(songInfo, hots, storys) {
+  gethotComms(songInfo, hots, hotComms) {
     hots.forEach(v => {
-      let story = {}
-      story.songId = songInfo.id
-      story.songName = songInfo.name
-      story.artistsName = songInfo.artists.map(v=>{
+      let hotCom = {}
+      hotCom.songId = songInfo.id
+      hotCom.songName = songInfo.name
+      hotCom.artistsName = songInfo.artists.map(v=>{
         return v.name
       })
-      story.id = v.commentId
-      story.name = v.user.nickname;
-      story.img = v.user.avatarUrl;
-      story.content = v.content;
+      hotCom.id = v.commentId
+      hotCom.name = v.user.nickname;
+      hotCom.img = v.user.avatarUrl;
+      hotCom.content = v.content;
       let ti = new Date(v.time)
-      story.time = ti.toLocaleString();
-      story.count = v.likedCount
-      story.hasActive = v.liked
-      story.zanimg = v.liked ? '/images/zan/zan_fullred.png' : '/images/zan/zan_dark.png'
-      story.oldActive = v.liked
-      storys.push(story)
+      hotCom.time = ti.toLocaleString();
+      hotCom.count = v.likedCount
+      hotCom.hasActive = v.liked
+      hotCom.zanimg = v.liked ? '/images/zan/zan_fullred.png' : '/images/zan/zan_dark.png'
+      hotCom.oldActive = v.liked
+      hotComms.push(hotCom)
     })
   },
   /**
@@ -150,11 +149,8 @@ Page({
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {},
-  hotComsChanged() {
-    this.data.storys.forEach(v => {
-      v.oldActive !== v.hasActive && this.likeChanged(v)
-    })
+  onHide: function () {
+
   },
 
   likeChanged(item) { //获取喜欢的评论
@@ -178,7 +174,7 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    // this.hotComsChanged()
+    
   },
 
   /**
@@ -192,7 +188,7 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-    // console.log('到底了');
+    console.log('到底了');
     this.showMoreData()
   },
   showMoreData() {
@@ -218,11 +214,11 @@ Page({
         let currentSongId = this.data.currentSongId,
             songinfo = this.data.songIdArr[currentSongId],
             hotComs = res.data.hotComments,
-            newHotStorys = []
-        this.getStorys(songinfo, hotComs, newHotStorys)
-        let newStorys = this.data.storys.concat(newHotStorys);
+            newHothotComms = []
+        this.gethotComms(songinfo, hotComs, newHothotComms)
+        let newhotComms = this.data.hotComms.concat(newHothotComms);
         this.setData({
-          storys: newStorys
+          hotComms: newhotComms
         })
         wx.hideLoading();
       })
@@ -237,13 +233,13 @@ Page({
   toDetailPage(e){
     console.log(e);
     let index = e.currentTarget.dataset.index,
-        dataInfo = this.data.storys[index];
+        dataInfo = this.data.hotComms[index];
     dataInfo.parentIndex = index;
     console.log(dataInfo);
     this.setStorage('currentDetail',dataInfo)
     .then(()=>{
       wx.navigateTo({
-        url: '/pages/detail/detail'
+        url: '/pages/detail/detail?goCommentId=2'
       });
     })
   },

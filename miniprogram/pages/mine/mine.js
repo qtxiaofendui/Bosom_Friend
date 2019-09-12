@@ -86,6 +86,7 @@ Page({
   /**
    * 生命周期函数--监听页面显示
    */
+<<<<<<< HEAD
   onShow: function () {
     this.getDynamic(4, 0);
   },
@@ -102,10 +103,18 @@ Page({
     app.getDataFromDb('story', {}, skipCount, limit)
       .then(res => {
         dynamic = res.data;
+=======
+  onShow: function() {
+    let dynamic = this.data.dynamic;
+    story.get().then(res => {
+        // console.log(res.data);
+        //dynamic = res.data;
+>>>>>>> a70672e37179bf4004f0cd0fdec0e681ec2faeb7
         this.setData({
           dynamic: this.data.dynamic.concat(res.data)
         })
       })
+<<<<<<< HEAD
       //故事与一级评论关联
       .then(() => {
         for (let i = skipCount; i < dynamic.length; i++) {
@@ -123,6 +132,30 @@ Page({
             });
         };
       })
+=======
+      //异步问题，先查询得到故事，查询与故事关联的comments
+      .then(
+        () => {
+          for (let i = 0; i < dynamic.length; i++) {
+            comments.where({
+                parentCommentId: dynamic[i]._id
+              }).get()
+              .then(res => {
+                //console.log(res.data,i);
+                dynamic[i]['not_read_comments'] = res.data;
+                dynamic[i]['active'] = true;
+                this.setDynamicItemData(i, dynamic[i])
+              });
+          };
+        }
+      )
+  },
+  setDynamicItemData(i,item){
+    let hasNotReadItem = `dynamic[${i}]`
+    this.setData({
+      [hasNotReadItem]: item
+    })
+>>>>>>> a70672e37179bf4004f0cd0fdec0e681ec2faeb7
   },
   /**
    * 生命周期函数--监听页面隐藏

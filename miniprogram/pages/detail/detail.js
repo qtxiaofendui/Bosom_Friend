@@ -31,6 +31,39 @@ Page({
         parentCommentId: this.data.detailInfo.id
       }
     return app.getDataFromDb('comments', data, skipCount, limit)
+    .then(res => {
+      let len = res.data.length,
+          limitLen = this.data.limitShowCommentsNum,
+          hasMoreDetail = false,
+          scc = ++this.data.showCommentsCount,
+          detailComs = this.data.detailComs;
+        if (len == limitLen) {
+          detailComs = this.concatDetailComs(detailComs,res.data)
+          hasMoreDetail = true
+        } else if (len && len < limitLen) {
+          detailComs = this.concatDetailComs(detailComs,res.data)
+        } else {
+          --scc
+        }
+        console.log(detailComs);
+        
+        this.setData({
+          detailComs: detailComs,
+          hasMoreDetail: hasMoreDetail,
+          showCommentsCount: scc
+        })
+      return res
+    })
+  },
+  concatDetailComs (arr1,arr2) {
+    if(arr1.length == 1){
+      for (let i = 0; i < arr2.length; i++) {
+        arr1[0]._id !== arr2[i]._id && arr1.push(arr2[i])
+      }
+    }else{
+      arr1 = arr1.concat(arr2)
+    }
+    return arr1
   },
   getLastCommentId() {
     app.getLastItemFromDb('comments', 'commentId', 'desc', 1)
