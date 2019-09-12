@@ -10,7 +10,7 @@ Page({
    */
   data: {
     dynamic: [{
-      story_Title: 'Finish Home Screen',
+        story_Title: 'Finish Home Screen',
         date: '2019-09-08',
         like_Account: '80',
         active: false,
@@ -71,13 +71,15 @@ Page({
    */
   onReady: function() {
 
-  }, 
+  },
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function() {
+    let dynamic = this.data.dynamic;
     story.get().then(res => {
         // console.log(res.data);
+        //dynamic = res.data;
         this.setData({
           dynamic: res.data
         })
@@ -85,7 +87,6 @@ Page({
       //异步问题，先查询得到故事，查询与故事关联的comments
       .then(
         () => {
-          let dynamic = this.data.dynamic;
           for (let i = 0; i < dynamic.length; i++) {
             comments.where({
                 parentCommentId: dynamic[i]._id
@@ -94,15 +95,17 @@ Page({
                 //console.log(res.data,i);
                 dynamic[i]['not_read_comments'] = res.data;
                 dynamic[i]['active'] = true;
+                this.setDynamicItemData(i, dynamic[i])
               });
           };
-          this.setData({
-            dynamic:dynamic
-          })
         }
-      ).then(()=>{
-        console.log(this.data.dynamic);
-      })
+      )
+  },
+  setDynamicItemData(i,item){
+    let hasNotReadItem = `dynamic[${i}]`
+    this.setData({
+      [hasNotReadItem]: item
+    })
   },
 
   /**
