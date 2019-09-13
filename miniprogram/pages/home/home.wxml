@@ -34,7 +34,7 @@
         <text class="content_text">{{item.content}}</text>
       </view>
     </view>
-    <view wx:if="{{!hasMore}}"  class="storys_bottom">
+    <view wx:if="{{!hasMore}}" class="storys_bottom">
       <text class="bottom_text">没有更多了</text>
     </view>
   </view>
@@ -58,11 +58,9 @@
       <view class="content">
         <text class="content_text">{{item.content}}</text>
       </view>
-      <view class="songName">
-        ----  {{item.artistsName}}  《{{item.songName}}》
-      </view>
+      <view class="songName">----  {{item.artistsName}}  《{{item.songName}}》</view>
     </view>
-    <view wx:if="{{!hasMore}}"  class="storys_bottom">
+    <view wx:if="{{!hasMore}}" class="storys_bottom">
       <text class="bottom_text">没有更多了</text>
     </view>
   </view>
