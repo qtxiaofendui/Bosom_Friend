@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var runtime = (function (exports) {
+var regeneratorRuntime = (function (exports) {
   "use strict";
 
   var Op = Object.prototype;
@@ -123,7 +123,7 @@ var runtime = (function (exports) {
   };
 
   // Within the body of any async function, `await x` is transformed to
-  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `yield regeneratorRuntime.awrap(x)`, so that the regeneratorRuntime can test
   // `hasOwn.call(value, "__await")` to determine if the yielded value is
   // meant to be awaited.
   exports.awrap = function(arg) {
@@ -697,9 +697,9 @@ var runtime = (function (exports) {
   };
 
   // Regardless of whether this script is executing as a CommonJS module
-  // or not, return the runtime object so that we can declare the variable
+  // or not, return the regeneratorRuntime object so that we can declare the variable
   // regeneratorRuntime in the outer scope, which allows this module to be
-  // injected easily by `bin/regenerator --include-runtime script.js`.
+  // injected easily by `bin/regenerator --include-regeneratorRuntime script.js`.
   return exports;
 
 }(
@@ -709,18 +709,3 @@ var runtime = (function (exports) {
   // the regeneratorRuntime variable at the top of this file.
   typeof module === "object" ? module.exports : {}
 ));
-
-try {
-  regeneratorRuntime = runtime;
-} catch (accidentalStrictMode) {
-  // This module should not be running in strict mode, so the above
-  // assignment should always work unless something is misconfigured. Just
-  // in case runtime.js accidentally runs in strict mode, we can escape
-  // strict mode using a global Function call. This could conceivably fail
-  // if a Content Security Policy forbids using Function, but in that case
-  // the proper solution is to fix the accidental strict mode problem. If
-  // you've misconfigured your bundler to force strict mode and applied a
-  // CSP to forbid Function, and you're not willing to fix either of those
-  // problems, please detail your unique predicament in a GitHub issue.
-  Function("r", "regeneratorRuntime = r")(runtime);
-}

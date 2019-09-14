@@ -154,9 +154,10 @@ Page({
     let pages = getCurrentPages(),
       prePage = pages[0],
       index = this.data.detailInfo.parentIndex,
-      story_count = `storys[${index}].count`,
-      story_zanimg = `storys[${index}].zanimg`,
-      story_hasActive = `storys[${index}].hasActive`;
+      typeStr = this.data.detailInfo.typeStr,
+      story_count = `${typeStr}[${index}].count`,
+      story_zanimg = `${typeStr}[${index}].zanimg`,
+      story_hasActive = `${typeStr}[${index}].hasActive`;
     prePage.setData({
       [story_count]: count,
       [story_zanimg]: imgUrl,
