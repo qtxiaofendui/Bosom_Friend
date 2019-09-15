@@ -1,4 +1,5 @@
 // pages/home/home.js
+const regeneratorRuntime = require("../../utils/runtime");
 const app = getApp()
 Page({
   /**
@@ -14,11 +15,14 @@ Page({
     autoplay: true,
     interval: 2000,
     duration: 500,
-    danghangs: ['故事','评论'],
+    danghangs: ['故事', '评论'],
     currentIndex: 1,
-    currentSongId: 0,
+    currentSongArrIndex: -1,
     showComments: false,
-    hasMore: true
+    hasMore: true,
+    limitDataLen: 10,
+    hotComms: [],
+    songIdArr: []
   },
   watchtab(e) {
     let _this = this
@@ -58,51 +62,79 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
+
     this.initData()
   },
 
   getSongArr() {
-    return new Promise((resolve, reject) => {
-      app.getWYYData({
-          url: `/recommend/songs`
-        })
-        .then(res => {
-          console.log(res);
-          return resolve(res)
-        })
+    return app.getWYYData({
+      url: `/recommend/songs`
     })
   },
   initData() {
+    this.getSongArr().then(res => {
+      this.setData({
+        songIdArr: res.data.recommend
+      })
+    }).then(res => {
+      this.showMoreData()
+    })
+    this.getItems()
+  },
+  showMoreData() {
     wx.showLoading({
       title: '加载数据中'
     });
-    this.getSongArr().then(res => [
-        this.setData({
-          songIdArr: res.data.recommend
-        })
-      ]).then(() => {
-        let currentSongId = this.data.currentSongId
-        let songId = this.data.songIdArr[currentSongId].id
-        return app.getWYYData({
-          url: `/comment/hot?id=${songId}&type=0`
-        })
-      })
+    this.getLimitData()
       .then(res => {
-        console.log(res);
-        let currentSongId = this.data.currentSongId,
-            songinfo = this.data.songIdArr[currentSongId],
-            hotComs = res.data.hotComments,
-            hotComms = []
-        this.gethotComms(songinfo, hotComs, hotComms)
         this.setData({
-          hotComms: hotComms
+          hotComms: res
         })
+      }).finally(() => {
         wx.hideLoading();
       })
-    // .catch(console.log)
-
-    this.getItems()
+  },
+  async getLimitData() {
+    let result = []
+    while (result.length < this.data.limitDataLen) {
+      let newData = await this.getShowComms()
+      result = result.concat(newData)
+    }
+    return result
+  },
+  getShowComms() {
+    let songId = this.getCurrSongIndex()
+    if (!songId) {
+      return;
+    }
+    return this.getCommsById(songId)
+  },
+  getCurrSongIndex() {
+    let currentSongArrIndex = ++this.data.currentSongArrIndex
+    if (currentSongArrIndex >= this.data.songIdArr.length) {
+      this.setData({
+        hasMore: false
+      })
+      return;
+    }
+    this.setData({
+      currentSongArrIndex: currentSongArrIndex
+    })
+    return this.data.songIdArr[currentSongArrIndex].id
+  },
+  getCommsById(songId) {
+    return app.getWYYData({
+        url: `/comment/hot?id=${songId}&type=0`
+      })
+      .then(res => {
+        let currentSongArrIndex = this.data.currentSongArrIndex,
+          songinfo = this.data.songIdArr[currentSongArrIndex],
+          hotComs = res.data.hotComments,
+          newHothotComms = []
+        this.gethotComms(songinfo, hotComs, newHothotComms)
+        let newhotComms = this.data.hotComms.concat(newHothotComms);
+        return newhotComms
+      })
   },
   getItems() {
     let item_len = this.data.danghangs.length;
@@ -116,7 +148,7 @@ Page({
       let hotCom = {}
       hotCom.songId = songInfo.id
       hotCom.songName = songInfo.name
-      hotCom.artistsName = songInfo.artists.map(v=>{
+      hotCom.artistsName = songInfo.artists.map(v => {
         return v.name
       })
       hotCom.id = v.commentId
@@ -129,6 +161,7 @@ Page({
       hotCom.hasActive = v.liked
       hotCom.zanimg = v.liked ? '/images/zan/zan_fullred.png' : '/images/zan/zan_dark.png'
       hotCom.oldActive = v.liked
+      hotCom.typeStr = 'hotComms'
       hotComms.push(hotCom)
     })
   },
@@ -174,7 +207,7 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
-    
+
   },
 
   /**
@@ -191,38 +224,6 @@ Page({
     console.log('到底了');
     this.showMoreData()
   },
-  showMoreData() {
-    let currentSongId = ++this.data.currentSongId
-    if (currentSongId >= this.data.songIdArr.length) {
-      this.setData({
-        hasMore: false
-      })
-      return;
-    }
-    let songId = this.data.songIdArr[currentSongId].id
-    wx.showLoading({
-      title: '正在获取更多数据',
-      mask: true,
-    });
-    this.setData({
-      currentSongId: currentSongId
-    })
-    app.getWYYData({
-        url: `/comment/hot?id=${songId}&type=0`
-      })
-      .then(res => {
-        let currentSongId = this.data.currentSongId,
-            songinfo = this.data.songIdArr[currentSongId],
-            hotComs = res.data.hotComments,
-            newHothotComms = []
-        this.gethotComms(songinfo, hotComs, newHothotComms)
-        let newhotComms = this.data.hotComms.concat(newHothotComms);
-        this.setData({
-          hotComms: newhotComms
-        })
-        wx.hideLoading();
-      })
-  },
 
   /**
    * 用户点击右上角分享
@@ -230,21 +231,21 @@ Page({
   onShareAppMessage: function () {
 
   },
-  toDetailPage(e){
+  toDetailPage(e) {
     console.log(e);
     let index = e.currentTarget.dataset.index,
-        dataInfo = this.data.hotComms[index];
+      dataInfo = this.data.hotComms[index];
     dataInfo.parentIndex = index;
     console.log(dataInfo);
-    this.setStorage('currentDetail',dataInfo)
-    .then(()=>{
-      wx.navigateTo({
-        url: '/pages/detail/detail?goCommentId=2'
-      });
-    })
+    this.setStorage('currentDetail', dataInfo)
+      .then(() => {
+        wx.navigateTo({
+          url: '/pages/detail/detail?goCommentId=2'
+        });
+      })
   },
   setStorage(key, value) {
-    return new Promise((resolve,reject)=>{
+    return new Promise((resolve, reject) => {
       wx.setStorage({
         key: key,
         data: value,
@@ -257,5 +258,5 @@ Page({
         complete: () => {}
       });
     })
-  },
+  }
 })
