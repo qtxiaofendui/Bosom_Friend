@@ -1,9 +1,11 @@
 {
   "pages": [
+    "pages/add/add",
+    "pages/bindWYY/index",
     "pages/home/home",
     "pages/mine/mine",
-    "pages/bindWYY/index",
-    "pages/add/add",
+    
+    
     "pages/detail/detail",
     "pages/story/story",
     "pages/index/index",

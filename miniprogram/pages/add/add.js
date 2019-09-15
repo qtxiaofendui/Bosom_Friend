@@ -43,7 +43,7 @@ Page({
   submit(e) {
     let story_Title = this.data.title;
     let story_Content = this.data.content;
-    let story_Date = new Date().toUTCString().substring(0, 16);
+    let story_Date = new Date();
     let bg_img = e.target.dataset.bg_img_url;
     console.log(e.target.dataset.bg_img_url);
     let user_Name = '';
@@ -76,13 +76,9 @@ Page({
       }).then(res => {
         console.log(res);
       })
+      //跳转到详情页
+      this.toDetailPage(story);
     })
-
-    // console.log(this.data.title);
-    // console.log(this.data.content);
-    // console.log(e.target.dataset.bg_img_url);
-
-
   },
   getThis() {
     return 123;
@@ -92,15 +88,6 @@ Page({
       console.log(res.data);
 
     })
-    //  lifecycle
-    // bg_img
-    //   .get()
-    //   .then(res => {
-    //     // console.log(res.data);
-    //     this.setData({
-    //       products: res.data.bg_img
-    //     })
-    //   })
   },
   getStorage(item) {
     return new Promise((resolve, reject) => {
@@ -117,11 +104,35 @@ Page({
     })
   },
   onShow() {
-    //console.log('开始编辑故事了');
     var date = new Date().toUTCString()/*.substring(0, 16)*/;
-    //console.log(date);
     this.setData({
       time: date
+    })
+  },
+  toDetailPage(e) {
+    console.log(e);
+    let dataInfo = e;
+    console.log(dataInfo);
+    this.setStorage('currentDetail', dataInfo)
+      .then(() => {
+        wx.navigateTo({
+          url: '/pages/detail/detail'
+        });
+      })
+  },
+  setStorage(key, value) {
+    return new Promise((resolve, reject) => {
+      wx.setStorage({
+        key: key,
+        data: value,
+        success: (result) => {
+          return resolve(result)
+        },
+        fail: (err) => {
+          return reject(err)
+        },
+        complete: () => { }
+      });
     })
   }
 })
