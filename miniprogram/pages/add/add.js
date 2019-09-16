@@ -6,7 +6,6 @@ const app = getApp()
 const db = wx.cloud.database();  //数据库连上了
 const productsCollection = db.collection('story');//表， 集合
 const bg_img = db.collection('bg_img');//表， 集合
-
 Page({
 
   data: {
@@ -47,6 +46,7 @@ Page({
     let bg_img = e.target.dataset.bg_img_url;
     console.log(e.target.dataset.bg_img_url);
     let user_Name = '';
+    let owner = '';
     let user_Portrait = '';
     let like_Account = 0;
     let conmmeted_Account = 0;
@@ -57,6 +57,7 @@ Page({
     this.getStorage('user').then(res => {
       user_Name = res.data.name;
       user_Portrait = res.data.img;
+      owner = res.data.owner;
       console.log('赋值完成')
     }).then(() => {
       //异步执行问题
@@ -69,7 +70,8 @@ Page({
         conmmeted_Account: conmmeted_Account,
         user_Name: user_Name,
         user_Portrait: user_Portrait,
-        new_comments: new_comments
+        new_comments: new_comments,
+        owner: owner
       }
       productsCollection.add({
         data: story

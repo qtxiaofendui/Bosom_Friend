@@ -27,6 +27,12 @@ Page({
           src: '../../images/mine_icon/shanchu.png ', // icon的路径
         }],
     });
+    this.getStorage('user').then(res => {
+      let owner = res.data.owner;
+      this.setData({
+        owner: owner
+      });
+    });
   },
 
 
@@ -52,7 +58,7 @@ Page({
   //获取动态
   getDynamic(limit, skipCount) {
     let dynamic = this.data.dynamic;
-    app.getDataFromDb('story', {}, skipCount, limit)
+    app.getDataFromDb('story', {owner:this.data.owner}, skipCount, limit)
       .then(res => {
         dynamic = res.data;
         this.setData({
@@ -124,38 +130,6 @@ Page({
   onShareAppMessage: function () {
 
   },
-  //获取元素自适应后的实际宽度
-  getEleWidth: function (w) {
-    var real = 0;
-    try {
-      var res = wx.getSystemInfoSync().windowWidth;
-      var scale = (750 / 2) / (w / 2);//以宽度750px设计稿做宽度的自适应
-      real = Math.floor(res / scale);
-      return real;
-    } catch (e) {
-      return false;
-      // Do something when catch error
-    }
-  },
-  initEleWidth: function () {
-    var delBtnWidth = this.getEleWidth(this.data.delBtnWidth);
-    this.setData({
-      delBtnWidth: delBtnWidth
-    });
-  },
-  slideButtonTap(e) {
-    // console.log('slide button tap', e.detail);
-    // console.log(e.target.dataset._id);
-    console.log(e);
-    var num = e.currentTarget.dataset.index;//获取data-index
-    this.data.dynamic.splice(num, 1);
-    this.setData({
-      dynamic: this.data.dynamic
-    });
-    story.where({
-      _id:this.data.dynamic[num]._id
-    }).remove();
-  },
   toDetailPage(e) {
     console.log(e);
     let index = e.currentTarget.dataset.index,
@@ -183,5 +157,19 @@ Page({
         complete: () => { }
       });
     })
-  }
+  },
+  getStorage(item) {
+    return new Promise((resolve, reject) => {
+      wx.getStorage({
+        key: item,
+        success: (result) => {
+          return resolve(result)
+        },
+        fail: (err) => {
+          return reject(err)
+        },
+        complete: () => { }
+      });
+    })
+  },
 })
