@@ -6,7 +6,6 @@ const app = getApp()
 const db = wx.cloud.database();  //数据库连上了
 const productsCollection = db.collection('story');//表， 集合
 const bg_img = db.collection('bg_img');//表， 集合
-
 Page({
 
   data: {
@@ -43,10 +42,11 @@ Page({
   submit(e) {
     let story_Title = this.data.title;
     let story_Content = this.data.content;
-    let story_Date = new Date().toUTCString().substring(0, 16);
+    let story_Date = new Date();
     let bg_img = e.target.dataset.bg_img_url;
     console.log(e.target.dataset.bg_img_url);
     let user_Name = '';
+    let owner = '';
     let user_Portrait = '';
     let like_Account = 0;
     let conmmeted_Account = 0;
@@ -57,6 +57,7 @@ Page({
     this.getStorage('user').then(res => {
       user_Name = res.data.name;
       user_Portrait = res.data.img;
+      owner = res.data.owner;
       console.log('赋值完成')
     }).then(() => {
       //异步执行问题
@@ -69,20 +70,17 @@ Page({
         conmmeted_Account: conmmeted_Account,
         user_Name: user_Name,
         user_Portrait: user_Portrait,
-        new_comments: new_comments
+        new_comments: new_comments,
+        owner: owner
       }
       productsCollection.add({
         data: story
       }).then(res => {
         console.log(res);
       })
+      //跳转到详情页
+      this.toDetailPage(story);
     })
-
-    // console.log(this.data.title);
-    // console.log(this.data.content);
-    // console.log(e.target.dataset.bg_img_url);
-
-
   },
   getThis() {
     return 123;
@@ -92,15 +90,6 @@ Page({
       console.log(res.data);
 
     })
-    //  lifecycle
-    // bg_img
-    //   .get()
-    //   .then(res => {
-    //     // console.log(res.data);
-    //     this.setData({
-    //       products: res.data.bg_img
-    //     })
-    //   })
   },
   getStorage(item) {
     return new Promise((resolve, reject) => {
@@ -117,11 +106,35 @@ Page({
     })
   },
   onShow() {
-    //console.log('开始编辑故事了');
     var date = new Date().toUTCString()/*.substring(0, 16)*/;
-    //console.log(date);
     this.setData({
       time: date
+    })
+  },
+  toDetailPage(e) {
+    console.log(e);
+    let dataInfo = e;
+    console.log(dataInfo);
+    this.setStorage('currentDetail', dataInfo)
+      .then(() => {
+        wx.navigateTo({
+          url: '/pages/detail/detail'
+        });
+      })
+  },
+  setStorage(key, value) {
+    return new Promise((resolve, reject) => {
+      wx.setStorage({
+        key: key,
+        data: value,
+        success: (result) => {
+          return resolve(result)
+        },
+        fail: (err) => {
+          return reject(err)
+        },
+        complete: () => { }
+      });
     })
   }
 })

@@ -58,18 +58,19 @@ Page({
     })
   },
 
-  getUserWyyData(id){
+  getUserWyyData(id,phone){
     app.getWYYData({url:`/user/detail?uid=${id}`}).then(res=>{
       console.log(res);
-      this.setGlobalUserData(res.data.profile)
+      this.setGlobalUserData(res.data.profile,phone)
     })
   },
-  setGlobalUserData(data){
+  setGlobalUserData(data,phone){
     let userInfo = {}
     userInfo.name = data.nickname
     userInfo.img = data.avatarUrl
     userInfo.bgcImg = data.backgroundUrl
     userInfo.id = data.userId
+    userInfo.owner = phone;
     this.setStorage('user',userInfo)
   },
 
@@ -84,7 +85,7 @@ Page({
           title = '绑定成功'
           icon = 'success'
           this.setCookie(res.cookies).then(()=>{
-            this.getUserWyyData(res.data.account.id)
+            this.getUserWyyData(res.data.account.id,phone)
           })
         } else {
           title = '手机或密码错误'
