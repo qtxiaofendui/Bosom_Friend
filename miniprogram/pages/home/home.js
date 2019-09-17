@@ -18,10 +18,13 @@ Page({
     danghangs: ['故事', '评论'],
     currentIndex: 1,
     currentSongArrIndex: -1,
+    currentStoryPage: 0,
     showComments: false,
     hasMore: true,
+    hasMoreStroys: true,
     limitDataLen: 10,
     hotComms: [],
+    storys: [],
     songIdArr: []
   },
   watchtab(e) {
@@ -64,6 +67,7 @@ Page({
   onLoad: function (options) {
 
     this.initData()
+    this.setStorys()
   },
 
   getSongArr() {
@@ -165,6 +169,88 @@ Page({
       hotComms.push(hotCom)
     })
   },
+  getLikedItem(data){
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data:{
+        dbFunc:'getDataFromDb',
+        collection: 'likedTable',
+        data,
+        skipCount: 0,
+        limit: 1
+      }
+    })
+  },
+  getCloudStroys(tagName,order,skipCount){
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data:{
+        dbFunc:'getLastItemFromDb',
+        collection: 'story',
+        tagName,
+        order,
+        skipCount,
+        limit: this.data.limitDataLen
+      }
+    })
+  },
+  async getLimitStorys () {
+    let storyPage = this.data.currentStoryPage
+    let storySkip = storyPage * this.data.limitDataLen
+    let result = await this.getCloudStroys('like_Acount','desc',storySkip),
+        storys = result.result.data.data;
+    console.log(result);
+    
+    if (storys.length < this.data.limitDataLen) {
+      this.setData({
+        hasMoreStroys: false
+      })
+    } else {
+      this.setData({
+        currentStoryPage: ++storyPage
+      })
+    }
+    return storys
+  },
+  async setStorys(){
+    if(!this.data.hasMoreStroys){
+      return
+    }
+    let storys = await this.getLimitStorys()
+    let user = await this.getStorage('user')
+    
+    for(let i = 0; i < storys.length; i++){
+      let isliked = await this.getLikedItem({
+        storyId: storys[i].id,
+        userId: user.data.id
+      })
+      storys.liked = isliked.result.data.data.length > 0
+    }
+    let newStorys = []
+    this.getStorys(storys, newStorys)
+    newStorys = this.data.storys.concat(newStorys)
+    this.setData({
+      storys: newStorys
+    })
+  },
+  getStorys(storys, newStorys) {
+    storys.forEach(v => {
+      let story = {}
+      story.id = v._id
+      story.songName = v.story_Title
+      story.name = v.user_Name;
+      story.img = v.user_Portrait;
+      story.content = v.story_Content;
+      // let ti = new Date(v.story_Date)
+      story.time = v.story_Date
+      story.count = v.like_Account
+      story.hasActive = v.liked || false
+      story.zanimg = v.liked ? '/images/zan/zan_fullred.png' : '/images/zan/zan_dark.png'
+      story.oldActive = v.liked || false
+      story.typeStr = 'storys'
+      newStorys.push(story)
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -222,7 +308,11 @@ Page({
    */
   onReachBottom: function () {
     console.log('到底了');
-    this.showMoreData()
+    if(this.data.currentIndex === 1){
+      this.showMoreData()
+    }else{
+      this.setStorys()
+    }
   },
 
   /**
@@ -233,8 +323,13 @@ Page({
   },
   toDetailPage(e) {
     console.log(e);
-    let index = e.currentTarget.dataset.index,
+    let index = e.currentTarget.dataset.index;
+    let dataInfo;
+    if(this.data.currentIndex === 1){
       dataInfo = this.data.hotComms[index];
+    } else {
+      dataInfo = this.data.storys[index];
+    }
     dataInfo.parentIndex = index;
     console.log(dataInfo);
     this.setStorage('currentDetail', dataInfo)
@@ -249,6 +344,20 @@ Page({
       wx.setStorage({
         key: key,
         data: value,
+        success: (result) => {
+          return resolve(result)
+        },
+        fail: (err) => {
+          return reject(err)
+        },
+        complete: () => {}
+      });
+    })
+  },
+  getStorage(key) {
+    return new Promise((resolve, reject) => {
+      wx.getStorage({
+        key: key,
         success: (result) => {
           return resolve(result)
         },
