@@ -69,7 +69,8 @@ Page({
       .then(() => {
         for (let i = skipCount; i < dynamic.length; i++) {
           comments.where({
-            parentCommentId: dynamic[i]._id
+            parentCommentId : dynamic[i]._id,
+            has_read : false
           }).limit(3).get()
             .then(res => {
               dynamic[i]['not_read_comments'] = res.data;
@@ -134,6 +135,16 @@ Page({
     console.log(e);
     let index = e.currentTarget.dataset.index,
       dataInfo = this.data.dynamic[index];
+    // 把active状态清除
+    comments.where({
+      parentCommentId: dataInfo._id,
+      has_read: false
+    })
+    .update({has_read: true});
+    
+
+
+
     dataInfo.parentIndex = index;
     console.log(dataInfo);
     this.setStorage('currentDetail', dataInfo)
