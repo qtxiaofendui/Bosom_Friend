@@ -37,14 +37,22 @@ Page({
     })
   },
   addCount(e) {
-    let index = e.currentTarget.dataset.index,
-      item = this.data.hotComms[index],
-      hotCom_count = `hotComms[${index}].count`,
-      hotCom_zanimg = `hotComms[${index}].zanimg`,
-      hotCom_hasActive = `hotComms[${index}].hasActive`,
-      count = item.count,
-      hasActive = item.hasActive,
-      imgUrl = '/images/zan/zan_fullred.png';
+    let typeStr = '',
+        index = e.currentTarget.dataset.index,
+        item = []
+    if (this.data.currentIndex === 1) {
+      typeStr = 'hotComms'
+      item = this.data.hotComms[index]
+    } else {
+      typeStr = 'storys'
+      item = this.data.storys[index]
+    }
+    let item_count = `${typeStr}[${index}].count`,
+        item_zanimg = `${typeStr}[${index}].zanimg`,
+        item_hasActive = `${typeStr}[${index}].hasActive`,
+        count = item.count,
+        hasActive = item.hasActive,
+        imgUrl = '/images/zan/zan_fullred.png';
     if (hasActive) {
       count--;
       imgUrl = '/images/zan/zan_dark.png';
@@ -53,11 +61,83 @@ Page({
       imgUrl = '/images/zan/zan_fullred.png'
     }
     this.setData({
-      [hotCom_count]: count,
-      [hotCom_zanimg]: imgUrl,
-      [hotCom_hasActive]: !hasActive,
+      [item_count]: count,
+      [item_zanimg]: imgUrl,
+      [item_hasActive]: !hasActive,
     })
     item.hasActive = !hasActive
+    if (this.data.currentIndex === 1) {
+      this.commentLikedChanged(item)
+    } else {
+      this.storyLikedChange(item)
+    }
+  },
+  async storyLikedChange(item) {
+    console.log(item.id, item.count);
+    this.updataStory(item.id, {
+      like_Account: item.count
+    }).then(console.log)
+    let userData = await this.getStorage('user'),
+      user = userData.data
+    if(item.hasActive){
+      this.insetLikedItem({
+        storyId: item.id,
+        userId: user.id
+      })
+    }else{
+      let data = await this.getLikedTableItem({
+        storyId: item.id,
+        userId: user.id
+      })
+      this.removeLikedItem(data.data[0]._id)
+    }
+  },
+  removeLikedItem(id){
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data:{
+        dbFunc:'removeItemFromDb',
+        collection: 'likedTable',
+        id
+      }
+    })
+  },
+  async getLikedTableItem(data){
+    let result = await wx.cloud.callFunction({
+      name: 'dboper',
+      data:{
+        dbFunc:'getDataFromDb',
+        collection: 'likedTable',
+        data,
+        skipCount:0,
+        limit:1
+      }
+    })
+    return result.result.data
+  },
+  insetLikedItem(data) {
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data:{
+        dbFunc:'insetDataForDb',
+        collection: 'likedTable',
+        data: {data}
+      }
+    })
+  },
+  updataStory(id, data) {
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data:{
+        dbFunc:'updataItemFromDb',
+        collection: 'story',
+        id,
+        data:{data},
+      }
+    })
+  },
+  commentLikedChanged(index){
+    
     this.likeChanged(item)
   },
 
@@ -221,11 +301,13 @@ Page({
     
     for(let i = 0; i < storys.length; i++){
       let isliked = await this.getLikedItem({
-        storyId: storys[i].id,
+        storyId: storys[i]._id,
         userId: user.data.id
       })
-      storys.liked = isliked.result.data.data.length > 0
+      storys[i].liked = isliked.result.data.data.length > 0
     }
+    console.log(storys);
+    
     let newStorys = []
     this.getStorys(storys, newStorys)
     newStorys = this.data.storys.concat(newStorys)
