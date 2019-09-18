@@ -14,7 +14,7 @@
     </view>
   </view>
   <view wx:if="{{showComments}}" class="storys">
-    <view wx:for="{{hotComms}}" class="storys_item">
+    <view wx:for="{{storys}}" class="storys_item" data-index="{{index}}" catchtap="toDetailPage">
       <view class="header">
         <view class="header_img">
           <image class="header_thumb" src="{{item.img}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
@@ -33,8 +33,9 @@
       <view class="content">
         <text class="content_text">{{item.content}}</text>
       </view>
+      <view class="songName">---- 《{{item.songName}}》</view>
     </view>
-    <view wx:if="{{!hasMore}}" class="storys_bottom">
+    <view wx:if="{{!hasMoreStroys}}" class="storys_bottom">
       <text class="bottom_text">没有更多了</text>
     </view>
   </view>

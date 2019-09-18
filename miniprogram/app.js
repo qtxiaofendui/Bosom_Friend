@@ -68,31 +68,5 @@ App({
         complete: () => {}
       });
     })
-  },
-  insetDataForDb(collection, data) {
-    const db = wx.cloud.database()
-    const coll = db.collection(collection)
-    return coll.add(data)
-  },
-  getDataFromDb(collection,data,skipCount,limit){
-    //console.log(skipCount,limit);
-    
-    const db = wx.cloud.database()
-    const coll = db.collection(collection)
-    
-    if(skipCount == 0){
-      return coll.where(data).limit(limit).get()
-    }else{
-      return coll.where(data).skip(skipCount).limit(limit).get()
-    }
-  },
-  getLastItemFromDb(collection,tagName,order,limit){
-    const db = wx.cloud.database()
-    return db.collection(collection).orderBy(tagName, order).limit(limit).get()
-  },
-  updataItemFromDb(collection,id,data){
-    const db = wx.cloud.database()
-    console.log(id,data);
-    return db.collection(collection).doc(id).update(data)
   }
 })

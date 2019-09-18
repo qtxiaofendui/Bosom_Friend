@@ -1,4 +1,5 @@
 // miniprogram/pages/detail/detail.js
+const regeneratorRuntime = require("../../utils/runtime");
 const app = getApp();
 
 Page({
@@ -20,9 +21,27 @@ Page({
   },
 
   InsetCommentsToCloud(data) {
-    return app.insetDataForDb('comments', {
-      data
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data:{
+        dbFunc:'insetDataForDb',
+        collection: 'comments',
+        data:{data}
+      }
     })
+  },
+  async getCommentsData(data, skipCount, limit){
+    let result = await wx.cloud.callFunction({
+      name: 'dboper',
+      data:{
+        dbFunc:'getDataFromDb',
+        collection: 'comments',
+        data,
+        skipCount,
+        limit
+      }
+    })
+    return result.result.data
   },
   getCommentsFromCloud(showCommentsCount) {
     let limit = this.data.limitShowCommentsNum,
@@ -30,48 +49,57 @@ Page({
       data = {
         parentCommentId: this.data.detailInfo.id
       }
-    return app.getDataFromDb('comments', data, skipCount, limit)
-    .then(res => {
-      let len = res.data.length,
+    return this.getCommentsData(data, skipCount, limit)
+      .then(res => {
+        let len = res.data.length,
           limitLen = this.data.limitShowCommentsNum,
           hasMoreDetail = false,
           scc = ++this.data.showCommentsCount,
           detailComs = this.data.detailComs;
         if (len == limitLen) {
-          detailComs = this.concatDetailComs(detailComs,res.data)
+          detailComs = this.concatDetailComs(detailComs, res.data)
           hasMoreDetail = true
         } else if (len && len < limitLen) {
-          detailComs = this.concatDetailComs(detailComs,res.data)
+          detailComs = this.concatDetailComs(detailComs, res.data)
         } else {
           --scc
         }
         console.log(detailComs);
-        
+
         this.setData({
           detailComs: detailComs,
           hasMoreDetail: hasMoreDetail,
           showCommentsCount: scc
         })
-      return res
-    })
+        return res
+      })
   },
-  concatDetailComs (arr1,arr2) {
-    if(arr1.length == 1){
+  concatDetailComs(arr1, arr2) {
+    if (arr1.length == 1) {
       for (let i = 0; i < arr2.length; i++) {
         arr1[0]._id !== arr2[i]._id && arr1.push(arr2[i])
       }
-    }else{
+    } else {
       arr1 = arr1.concat(arr2)
     }
     return arr1
   },
   getLastCommentId() {
-    app.getLastItemFromDb('comments', 'commentId', 'desc', 1)
-      .then(res => {
-        this.setData({
-          lastCommentId: res.data[0].commentId
-        })
+    wx.cloud.callFunction({
+      name: 'dboper',
+      data: {
+        dbFunc: 'getLastItemFromDb',
+        collection: 'comments',
+        tagName: 'commentId',
+        order: 'desc',
+        skipCount: 0,
+        limit: 1
+      }
+    }).then(res => {
+      this.setData({
+        lastCommentId: res.result.data.data[0].commentId
       })
+    })
   },
   editComment(e) {
     let commentValue = e.detail.value,
@@ -167,28 +195,96 @@ Page({
   likeChanged(item) { //获取喜欢的评论
     // console.log(item);
     console.log(1);
-
+    let typeStr = item.typeStr
+    if (typeStr === 'storys') {
+      this.storylikedChange(item)
+    } else {
+      this.CommentslikedChange(item)
+    }
+  },
+  async storylikedChange(item) {
+    console.log(item.id, item.count);
+    this.updataStory(item.id, {
+      like_Account: item.count
+    }).then(console.log)
+    let userData = await this.getStorage('user'),
+      user = userData.data
+    if(item.hasActive){
+      this.insetLikedItem({
+        storyId: item.id,
+        userId: user.id
+      })
+    }else{
+      let data = await this.getLikedTableItem({
+        storyId: item.id,
+        userId: user.id
+      })
+      this.removeLikedItem(data.data[0]._id)
+    }
+  },
+  updataStory(id, data) {
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data:{
+        dbFunc:'updataItemFromDb',
+        collection: 'story',
+        id,
+        data:{data},
+      }
+    })
+  },
+  async CommentslikedChange(item) {
     let t = 1
     if (!item.hasActive) {
       t = 0
     }
-    // console.log(item.hasActive,t);
-
     app.getWYYData({
         url: `/comment/like?id=${item.songId}&cid=${item.id}&t=${t}&type=0`
       })
       .then(res => {
         // console.log(res);
-
       })
+  },
+  async getLikedTableItem(data){
+    let result = await wx.cloud.callFunction({
+      name: 'dboper',
+      data:{
+        dbFunc:'getDataFromDb',
+        collection: 'likedTable',
+        data,
+        skipCount:0,
+        limit:1
+      }
+    })
+    return result.result.data
+  },
+  removeLikedItem(id){
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data:{
+        dbFunc:'removeItemFromDb',
+        collection: 'likedTable',
+        id
+      }
+    })
+  },
+  insetLikedItem(data) {
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data:{
+        dbFunc:'insetDataForDb',
+        collection: 'likedTable',
+        data: {data}
+      }
+    })
   },
   likeDetailChange(e) {
     let detailComs = this.data.detailComs,
-        index = e.currentTarget.dataset.index,
-        dataInfo = detailComs[index],
-        count = dataInfo.count,
-        hasActive = !dataInfo.hasActive,
-        imgUrl = '';
+      index = e.currentTarget.dataset.index,
+      dataInfo = detailComs[index],
+      count = dataInfo.count,
+      hasActive = !dataInfo.hasActive,
+      imgUrl = '';
     if (hasActive) {
       count++;
       imgUrl = '/images/zan/zan_fullred.png'
@@ -197,10 +293,22 @@ Page({
       imgUrl = '/images/zan/zan_dark.png';
     }
     this.setCurrPageData(`detailComs[${index}]`, count, imgUrl, hasActive)
-    this.debounce(this.updataDetailCom, 500)(dataInfo._id,{count,zanimg:imgUrl,hasActive})
+    this.debounce(this.updataDetailCom, 500)(dataInfo._id, {
+      count,
+      zanimg: imgUrl,
+      hasActive
+    })
   },
-  updataDetailCom(id,data){
-    app.updataItemFromDb('comments',id,{data})
+  updataDetailCom(id, data) {
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data:{
+        dbFunc:'updataItemFromDb',
+        collection: 'comments',
+        id,
+        data:{data},
+      }
+    })
   },
   debounce(fn, delay) {
     return function (...args) {
