@@ -165,7 +165,9 @@ Page({
       imgUrl = '/images/zan/zan_fullred.png'
     }
     this.setCurrPageData('detailInfo', count, imgUrl, !hasActive)
-    this.setHomePageData(count, imgUrl, !hasActive)
+    if(!dataInfo.isfromMine){
+      this.setHomePageData(count, imgUrl, !hasActive)
+    }
     this.debounce(this.likeChanged, 500)(dataInfo)
   },
   setCurrPageData(item, count, imgUrl, hasActive) {
@@ -327,11 +329,6 @@ Page({
    */
   onLoad: function (options) {
     this.getStorage('currentDetail').then(res => {
-        let detailComs = Array.from({
-          length: 10
-        }, v => {
-          return res.data
-        })
         this.setData({
           detailInfo: res.data
         })

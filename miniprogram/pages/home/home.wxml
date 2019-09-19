@@ -1,6 +1,6 @@
 <view class="container">
   <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
-    <block wx:for="{{imgUrls}}">
+    <block wx:for="{{imgUrls}}" wx:key="{{index}}">
       <swiper-item>
         <image src="{{item}}" mode="scaleToFill" />
       </swiper-item>
@@ -14,7 +14,7 @@
     </view>
   </view>
   <view wx:if="{{showComments}}" class="storys">
-    <view wx:for="{{storys}}" class="storys_item" data-index="{{index}}" catchtap="toDetailPage">
+    <view wx:for="{{storys}}" wx:key="{{index}}" class="storys_item" data-index="{{index}}" catchtap="toDetailPage">
       <view class="header">
         <view class="header_img">
           <image class="header_thumb" src="{{item.img}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
@@ -40,7 +40,7 @@
     </view>
   </view>
   <view wx:else class="storys">
-    <view wx:for="{{hotComms}}" class="storys_item" data-index="{{index}}" catchtap="toDetailPage">
+    <view wx:for="{{hotComms}}" wx:key="{{index}}" class="storys_item" data-index="{{index}}" catchtap="toDetailPage">
       <view class="header">
         <view class="header_img">
           <image class="header_thumb" src="{{item.img}}" mode="aspectFit|aspectFill|widthFix" lazy-load="false" binderror="" bindload=""></image>
