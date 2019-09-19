@@ -18,12 +18,12 @@ App({
       wyy_root: 'http://127.0.0.1:3000'
     }
   },
-  getCookies(){
-    return new Promise((resolve,reject)=>{
+  getCookies() {
+    return new Promise((resolve, reject) => {
       wx.getStorage({
         key: 'Cookie',
-        success: result=>resolve(result),
-        fail: ()=>reject('err')
+        success: result => resolve(result),
+        fail: () => reject('err')
       });
     })
   },
@@ -35,10 +35,10 @@ App({
         'Cookie': res.data.join(';')
       }
       return obj
-    }).catch(err =>{
+    }).catch(err => {
       obj.url = this.globalData.wyy_root + obj.url
       return obj
-    }).then(res=>{
+    }).then(res => {
       return this.requestData(res)
     })
   },
@@ -65,7 +65,7 @@ App({
         fail: () => {
           return reject('err')
         },
-        complete: () => {}
+        complete: () => { }
       });
     })
   }

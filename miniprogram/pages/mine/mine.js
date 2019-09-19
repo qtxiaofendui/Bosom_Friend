@@ -58,7 +58,7 @@ Page({
   //获取动态
   getDynamic(limit, skipCount) {
     let dynamic = this.data.dynamic;
-    app.getDataFromDb('story', {owner:this.data.owner}, skipCount, limit)
+    this.getData(limit,skipCount)
       .then(res => {
         dynamic = res.data;
         this.setData({
@@ -83,6 +83,13 @@ Page({
             });
         };
       })
+  },
+  getData(limit, skipCount){
+    if(skipCount == 0){
+      return story.where({ owner: this.data.owner }).limit(limit).get()
+    }else{
+      return story.where({ owner: this.data.owner }).skip(skipCount).limit(limit).get()
+    }
   },
   /**
    * 生命周期函数--监听页面隐藏
@@ -139,10 +146,12 @@ Page({
     comments.where({
       parentCommentId: dataInfo._id,
       has_read: false
+    }).get()
+    .then((res)=>{
+      for(let comment in res){
+        comments.doc(comment._id).set({has_read: true});
+      }
     })
-    .update({has_read: true});
-    
-
 
 
     dataInfo.parentIndex = index;
