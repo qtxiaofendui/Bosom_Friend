@@ -12,7 +12,7 @@
                 </view>
             </view>
             <view class="content">
-                <text class="content_text">{{detailInfo.content}}</text>
+                <text class="content_text">{{detailInfo.content }}</text>
             </view>
             <view class="songName">
                 ----  {{detailInfo.artistsName}}  《{{detailInfo.songName}}》

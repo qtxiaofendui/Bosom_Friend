@@ -1,5 +1,5 @@
 <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}" previous-margin="60rpx" next-margin="60rpx">
-  <block wx:for="{{imgUrls}}" wx:for-index="index" >
+  <block wx:for="{{imgUrls}}" wx:for-index="index" wx:key="index" >
     <swiper-item >
       <view class="contain_bg" >
         <image src='{{item}}' class="bg_img"></image>

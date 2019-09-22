@@ -12,14 +12,19 @@ function insetDataForDb(args) {
 
 function getDataFromDb(args) {
   let {collection, data, skipCount, limit} = args
-  //console.log(skipCount,limit);
-
+  console.log(skipCount,limit);
   const coll = db.collection(collection)
-
+  if(limit == 10){
+    getData(collection, data, skipCount).get();
+  }else{
+    getData(collection, data, skipCount).limit(limit).get();
+  }
+}
+function getData(collection, data, skipCount) {
   if (skipCount == 0) {
-    return coll.where(data).limit(limit).get()
+    return coll.where(data)
   } else {
-    return coll.where(data).skip(skipCount).limit(limit).get()
+    return coll.where(data).skip(skipCount)
   }
 }
 
@@ -35,6 +40,11 @@ function getLastItemFromDb(args) {
 function updataItemFromDb(args) {
   let {collection, id, data} = args
   return db.collection(collection).doc(id).update(data)
+}
+
+function batch_Update (args) {
+  let { collection, condition, data } = args
+  return db.collection(collection).where(condition).update(data)
 }
 
 function removeItemFromDb(args) {

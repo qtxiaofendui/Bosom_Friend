@@ -10,15 +10,13 @@ Page({
    */
   data: {
     limit: 4,
-    dynamic: [
-    ],
+    dynamic: [],
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    //this.initEleWidth();
     this.setData({
       slideButtons: [
         {
@@ -32,9 +30,8 @@ Page({
       this.setData({
         owner: owner
       });
-    });
+    }); 
   },
-
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -46,6 +43,10 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    this.setData({
+      limit: 4,
+      dynamic: [],
+    })
     this.getDynamic(4, 0);
   },
   //更新数组数据
@@ -58,23 +59,23 @@ Page({
   //获取动态
   getDynamic(limit, skipCount) {
     let dynamic = this.data.dynamic;
-    this.getData(limit,skipCount)
+    this.getData('story', { owner: this.data.owner }, limit, skipCount)
       .then(res => {
-        dynamic = res.data;
+        dynamic = res.result.data.data;
+        console.log('故事列表：', res);
         this.setData({
-          dynamic: this.data.dynamic.concat(res.data)
+          dynamic: this.data.dynamic.concat(dynamic)
         })
       })
-      //故事与一级评论关联
+      //故事与评论关联
       .then(() => {
+        let dynamic = this.data.dynamic;
         for (let i = skipCount; i < dynamic.length; i++) {
-          comments.where({
-            parentCommentId : dynamic[i]._id,
-            has_read : false
-          }).limit(3).get()
+          this.getData('comments', { parentCommentId: dynamic[i]._id, has_read: false }, 10, 0)
             .then(res => {
-              dynamic[i]['not_read_comments'] = res.data;
-              if (res.data.length !== 0) {
+              console.log('评论列表',res.result.data.data)
+              dynamic[i]['not_read_comments'] = res.result.data.data;
+              if (res.result.data.data.length !== 0) {
                 dynamic[i]['active'] = true;
               } else {
                 dynamic[i]['active'] = false;
@@ -84,12 +85,17 @@ Page({
         };
       })
   },
-  getData(limit, skipCount){
-    if(skipCount == 0){
-      return story.where({ owner: this.data.owner }).limit(limit).get()
-    }else{
-      return story.where({ owner: this.data.owner }).skip(skipCount).limit(limit).get()
-    }
+  getData(col, data, limit, skipCount) {
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data: {
+        dbFunc: 'getDataFromDb',
+        collection: col,
+        data: data,
+        skipCount: skipCount,
+        limit: limit
+      }
+    })
   },
   /**
    * 生命周期函数--监听页面隐藏
@@ -116,44 +122,32 @@ Page({
    */
   /**
        * 页面上拉触底事件的处理函数
-
-     */
+  */
   onReachBottom: function () {
     wx.showLoading({
       title: '玩命加载中',
     })
     console.log(this.data.limit);
     this.getDynamic(3, this.data.limit);
-    this.data.limit += 2;
-    setTimeout(() => {
-      this.setData({
-        limit: this.data.limit
-      })
-      wx.hideLoading();
-    }, 1000)
+    this.data.limit += 3;
+    this.setData({
+      limit: this.data.limit
+    })
+    wx.hideLoading();
   },
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  },
+  // 去到详情页
   toDetailPage(e) {
     console.log(e);
     let index = e.currentTarget.dataset.index,
-      dataInfo = this.data.dynamic[index];
+      dataSourse = this.data.dynamic[index];
+    let dataInfo = {};
+    this.assignment(dataInfo, dataSourse);
     // 把active状态清除
-    comments.where({
-      parentCommentId: dataInfo._id,
-      has_read: false
-    }).get()
-    .then((res)=>{
-      for(let comment in res){
-        comments.doc(comment._id).set({has_read: true});
-      }
-    })
-
-
+    this.data.dynamic[index].active = false;
+    this.setData({
+      dynamic : this.data.dynamic
+    });
+    this.remove_active(dataSourse);
     dataInfo.parentIndex = index;
     console.log(dataInfo);
     this.setStorage('currentDetail', dataInfo)
@@ -163,6 +157,27 @@ Page({
         });
       })
   },
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function () {
+  },
+  // 重构变量名
+  assignment(dataInfo, dataSourse) {
+    dataInfo.id = dataSourse._id;
+    dataInfo.songName = dataSourse.story_Title
+    dataInfo.name = dataSourse.user_Name
+    dataInfo.img = dataSourse.user_Img
+    dataInfo.content = dataSourse.story_Content;
+    dataInfo.time = dataSourse.story_Date;
+    dataInfo.count = dataSourse.like_Account;
+    dataInfo.hasActive = false;
+    dataInfo.zanimg = '/images/zan/zan_dark.png'
+    dataInfo.oldActive = false;
+    dataInfo.typeStr = 'storys';
+    dataInfo.isFromMine = true;
+  },
+  // 把数据保存到storage中
   setStorage(key, value) {
     return new Promise((resolve, reject) => {
       wx.setStorage({
@@ -178,6 +193,7 @@ Page({
       });
     })
   },
+  // 从storage中获取数据
   getStorage(item) {
     return new Promise((resolve, reject) => {
       wx.getStorage({
@@ -190,6 +206,25 @@ Page({
         },
         complete: () => { }
       });
+    })
+  },
+  // 把active状态清除
+  remove_active(data) {
+    console.log('-----',data);
+    for(let i = 0; i < data.not_read_comments.length; i++){
+      let dataSource = data.not_read_comments[i];
+      this.updataComments(dataSource._id,{ has_read:true });
+    }
+  },
+  updataComments(id, data) {
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data: {
+        dbFunc: 'updataItemFromDb',
+        collection: 'comments',
+        id,
+        data: { data },
+      }
     })
   },
 })

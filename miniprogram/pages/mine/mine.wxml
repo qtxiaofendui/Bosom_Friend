@@ -18,7 +18,7 @@
               <text class="unit">AM</text>
               <view class="commentators">
                 <block wx:for="{{item.not_read_comments}}" wx:for-item="new_comments" wx:key="index">
-                  <view class="Portrait">
+                  <view class="Portrait" wx:if="{{index < 3}}">
                     <image src="{{new_comments.img}}"></image>
                   </view>
                 </block>
