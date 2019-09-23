@@ -22,10 +22,15 @@ function getDataFromDb(args) {
 }
 function getData(collection, data, skipCount) {
   if (skipCount == 0) {
-    return coll.where(data)
+    return collection.where(data)
   } else {
-    return coll.where(data).skip(skipCount)
+    return collection.where(data).skip(skipCount)
   }
+}
+
+function getCount(args){
+  let {collection} = args;
+  return colletction.count()
 }
 
 function getLastItemFromDb(args) {

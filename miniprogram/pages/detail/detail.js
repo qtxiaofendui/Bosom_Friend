@@ -111,7 +111,8 @@ Page({
   },
   sendComment(e) {
     this.getNewComment().then(res => {
-        let newComment = res
+        let newComment = res;
+        newComment['has_read'] = false;
         this.InsetCommentsToCloud(newComment)
         this.setData({
           resetContent: ''

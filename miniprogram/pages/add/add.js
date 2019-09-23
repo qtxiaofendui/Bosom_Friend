@@ -25,13 +25,11 @@ Page({
     content: ''
   },
   input_title(e) {
-    console.log(e.detail.value);
     this.setData({
       title: e.detail.value
     })
   },
   input_content(e) {
-    console.log(e.detail.value);
     this.setData({
       content: e.detail.value
     })
@@ -41,16 +39,12 @@ Page({
     let story_Content = this.data.content;
     let story_Date = new Date();
     let bg_img = e.target.dataset.bg_img_url;
-    console.log(e.target.dataset.bg_img_url);
     let user_Name = '';
     let user_Img = '';
     let owner = '';
     let user_Portrait = '';
     let like_Account = 0;
     let conmmeted_Account = 0;
-    let new_comments = {};
-    //构造数据库字段
-
     //获取当前用户数据
     this.getStorage('user').then(res => {
       user_Name = res.data.name;
@@ -59,11 +53,11 @@ Page({
       owner = res.data.owner;
       console.log('赋值完成')
     }).then(() => {
-      //异步执行问题
+      //构造数据库字段
       const story = {
         story_Title: story_Title,
         story_Content: story_Content,
-        story_Date: story_Date.toJSON(),
+        story_Date: story_Date.toUTCString(),
         bg_img: bg_img,
         like_Account: like_Account,
         conmmeted_Account: conmmeted_Account,
@@ -72,21 +66,28 @@ Page({
         user_Portrait: user_Portrait,
         owner: owner
       }
-
       // 计算出id
-      let id = 0;
+      let id = 0; 
       productsCollection.count().then((res) => {
         id = res.total;
       }).then(() => {
         // 数据存入数据库中
-        this.InsetCommentsToCloud(story);
-        // 跳转到详情页
-        let dataInfo = {};
-        // 变量名一致化
-        this.assignment(dataInfo, story);
-        dataInfo.parentIndex = id;
-        dataInfo.id = id;
-        this.toDetailPage(dataInfo);
+        story['id'] = id;
+        this.InsetCommentsToCloud(story).then(() => {
+          // 获取到story的_id
+          this.getData(id).then((res) => {
+            let _id = res.result.data.data[0]._id;
+            console.log(_id);
+            // 变量名一致化
+            let dataInfo = {};
+            this.assignment(dataInfo, story);
+            dataInfo.parentIndex = _id;
+            dataInfo.id = _id;
+            // 跳转到详情页
+            this.toDetailPage(dataInfo);
+          });
+          
+        })
       })
     })
   },
@@ -107,6 +108,7 @@ Page({
     })
   },
   onShow() {
+    this.clearInputEvent();
     var date = new Date().toUTCString()/*.substring(0, 16)*/;
     this.setData({
       time: date
@@ -162,5 +164,30 @@ Page({
     dataInfo.oldActive = false;
     dataInfo.typeStr = 'storys';
     dataInfo.isFromMine = true;
+  },
+  // 清空输入框
+  clearInputEvent: function (res) {
+    this.setData({
+      'inputContent': '',
+      'inputTitle':''
+    })
+  },
+  // get数据
+  getData(id) {
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data: {
+        dbFunc: 'getDataFromDb',
+        collection: 'story',
+        data: {id:id},
+        skipCount: 0,
+        limit: 1
+      }
+    })
+    // .then((res) => {
+    //   let result = res.result.data.data[0];
+    //   return result._id;
+    //   console.log(result._id);
+    // })
   },
 })

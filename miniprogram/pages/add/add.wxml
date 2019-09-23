@@ -4,9 +4,9 @@
       <view class="contain_bg" >
         <image src='{{item}}' class="bg_img"></image>
         <view class="contain">
-          <input class="title" placeholder="请输入你的标题" bindblur="input_title"></input>
+          <input class="title" placeholder="请输入你的标题" bindinput="input_title" value='{{inputTitle}}'></input>
           <text class="date">{{time}}</text>
-          <textarea class="content" bindblur="input_content"></textarea>
+          <textarea class="content" bindinput="input_content" value='{{inputContent}}'></textarea>
           <button class="submit" data-bg_img_url="{{item}}" bindtap="submit">确认并发表</button>
         </view>
       </view>

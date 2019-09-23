@@ -104,3 +104,14 @@
   top: 50%;
   transform: translateY(-50%)
 }
+.detailComs_bottom {
+    width: 100%;
+    text-align: center;
+    height: 80rpx;
+}
+.bottom_text {
+    font-size: 26rpx;
+    color: #cccccc;
+    display: line-block;
+    line-height: 80rpx;
+}

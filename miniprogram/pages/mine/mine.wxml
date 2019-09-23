@@ -38,5 +38,8 @@
         </mp-slideview>
       </mp-cells>
     </block>
+    <view wx:if="{{!hasMoreDetail}}"  class="detailComs_bottom">
+      <text class="bottom_text">没有更多了</text>
+    </view>
   </view>
 </view>
