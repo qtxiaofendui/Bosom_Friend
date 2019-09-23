@@ -39,7 +39,7 @@ Page({
   addCount(e) {
     let typeStr = '',
         index = e.currentTarget.dataset.index,
-        item = []
+        item = {}
     if (this.data.currentIndex === 1) {
       typeStr = 'hotComms'
       item = this.data.hotComms[index]
@@ -66,6 +66,7 @@ Page({
       [item_hasActive]: !hasActive,
     })
     item.hasActive = !hasActive
+    console.log(item)
     if (this.data.currentIndex === 1) {
       this.commentLikedChanged(item)
     } else {
@@ -136,8 +137,7 @@ Page({
       }
     })
   },
-  commentLikedChanged(index){
-    
+  commentLikedChanged(item){
     this.likeChanged(item)
   },
 
