@@ -1,4 +1,5 @@
 // pages/mine/mine.js
+const regeneratorRuntime = require("../../utils/runtime");
 const app = getApp();
 const db = wx.cloud.database(); //连接数据库
 const story = db.collection('story');
@@ -27,10 +28,12 @@ Page({
     });
     this.getStorage('user').then(res => {
       let owner = res.data.owner;
+      console.log('++++', owner);
       this.setData({
         owner: owner
       });
-    }); 
+    });
+    this.getDynamic(4, 0);
   },
 
   /**
@@ -47,7 +50,8 @@ Page({
       limit: 4,
       dynamic: [],
     })
-    this.getDynamic(4, 0);
+
+    
   },
   //更新数组数据
   setDynamicItemData(i, item) {
@@ -57,8 +61,12 @@ Page({
     })
   },
   //获取动态
-  getDynamic(limit, skipCount) {
+  async getDynamic(limit, skipCount) {
+    let owner1 =  await this.getStorage('user')
+    console.log(owner1, '__________');
+    let owner = owner1.data.owner;
     let dynamic = this.data.dynamic;
+    console.log('------', this.data.owner) 
     this.getData('story', { owner: this.data.owner }, limit, skipCount)
       .then(res => {
         dynamic = res.result.data.data;
