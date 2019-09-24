@@ -277,8 +277,8 @@ Page({
   async getLimitStorys () {
     let storyPage = this.data.currentStoryPage
     let storySkip = storyPage * this.data.limitDataLen
-    let result = await this.getCloudStroys('like_Acount','desc',storySkip),
-        storys = result.result.data.data;
+    let result = await this.getCloudStroys('like_Acount','desc',storySkip);
+    let storys = result.result.data.data;
     console.log(result);
     
     if (storys.length < this.data.limitDataLen) {
@@ -304,6 +304,7 @@ Page({
         storyId: storys[i]._id,
         userId: user.data.id
       })
+      // console.log(isliked.result);
       storys[i].liked = isliked.result.data.data.length > 0
     }
     console.log(storys);

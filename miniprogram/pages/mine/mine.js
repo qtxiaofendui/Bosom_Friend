@@ -46,12 +46,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    this.setData({
-      limit: 4,
-      dynamic: [],
-    })
 
-    
   },
   //更新数组数据
   setDynamicItemData(i, item) {
@@ -62,9 +57,11 @@ Page({
   },
   //获取动态
   async getDynamic(limit, skipCount) {
-    let owner1 =  await this.getStorage('user')
-    console.log(owner1, '__________');
-    let owner = owner1.data.owner;
+    let user =  await this.getStorage('user')
+    let owner = user.data.owner;
+    this.setData({
+      user:user
+    })
     let dynamic = this.data.dynamic;
     console.log('------', this.data.owner) 
     this.getData('story', { owner: this.data.owner }, limit, skipCount)
@@ -144,7 +141,7 @@ Page({
     wx.hideLoading();
   },
   // 去到详情页
-  toDetailPage(e) {
+  async toDetailPage(e) {
     console.log(e);
     let index = e.currentTarget.dataset.index,
       dataSourse = this.data.dynamic[index];
@@ -158,10 +155,17 @@ Page({
     this.remove_active(dataSourse);
     dataInfo.parentIndex = index;
     console.log(dataInfo);
+    let isliked = await this.getLikedItem({
+      storyId: dataSourse._id,//story_id
+      userId: this.data.user.id // owner_id
+    })
+    console.log('----+++++', isliked);
+    dataInfo.liked = isliked.result.data.data.length > 0
+    
     this.setStorage('currentDetail', dataInfo)
       .then(() => {
         wx.navigateTo({
-          url: '/pages/detail/detail'
+          url: '/pages/detail/detail'///pages/detail/detail&commentId=1
         });
       })
   },
@@ -232,6 +236,18 @@ Page({
         collection: 'comments',
         id,
         data: { data },
+      }
+    })
+  },
+  getLikedItem(data) {
+    return wx.cloud.callFunction({
+      name: 'dboper',
+      data: {
+        dbFunc: 'getDataFromDb',
+        collection: 'likedTable',
+        data,
+        skipCount: 0,
+        limit: 1
       }
     })
   },
